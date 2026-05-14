@@ -1,0 +1,77 @@
+﻿using MiniJokeRPGAPP.Models.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Net.Http.Json;
+using System.Text;
+
+namespace MiniJokeRPGAPP.Services
+{
+    public class PartidasService : GeneralService
+    {
+        public async Task<bool> CrearPartida(CrearPartidaDto dto)
+        {
+            await SetToken();
+
+            var response = await client.PostAsJsonAsync("api/partidas", dto);
+
+            await VerificarError(response);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> SeleccionarPersonaje(int idPartida, SeleccionarPersonajeDto dto)
+        {
+            await SetToken();
+
+            var response = await client.PostAsJsonAsync($"api/partidas/{idPartida}/personaje", dto);
+
+            await VerificarError(response);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<PartidaResponseDTO>> GetPartidas()
+        {
+            await SetToken();
+
+            var response = await client.GetAsync("api/partidas");
+
+            await VerificarError(response);
+
+            return await response.Content.ReadFromJsonAsync<List<PartidaResponseDTO>>() ?? [];
+        }
+
+        public async Task<PartidaResponseDTO?> EntrarPartida(int idPartida)
+        {
+            await SetToken();
+
+            var response = await client.GetAsync($"api/partidas/{idPartida}");
+
+            await VerificarError(response);
+
+            return await response.Content.ReadFromJsonAsync<PartidaResponseDTO>();
+        }
+
+        public async Task<bool> RealizarAccion( int idPartida, RealizarAccionDto dto)
+        {
+            await SetToken();
+
+            var response = await client.PostAsJsonAsync($"api/partidas/{idPartida}/accion", dto);
+
+            await VerificarError(response);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<AccionResponseDTO>> CargarAcciones(int idPartida)
+        {
+            await SetToken();
+
+            var response = await client.GetAsync($"api/partidas/{idPartida}/acciones");
+
+            await VerificarError(response);
+
+            return await response.Content.ReadFromJsonAsync<List<AccionResponseDTO>>() ?? [];
+        }
+    }
+}

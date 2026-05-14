@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MiniJokeRPGAPP/MiniJokeRPGAPP.csproj" Id="7c0f3add-ccec-49ba-a7b5-d1db5bad26ef">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="U2MovilesProyecto/MiniJokeRPGAPI.csproj" />
+</Solution>
