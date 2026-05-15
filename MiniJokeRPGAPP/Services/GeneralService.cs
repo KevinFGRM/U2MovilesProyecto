@@ -7,15 +7,15 @@ namespace MiniJokeRPGAPP.Services
 {
     public class GeneralService
     {
-        protected readonly HttpClient client;
+        private readonly HttpClient client;
 
-        protected string baseUrl = "https://TUAPI.com/";
+        private string url = "https://localhost:7202/";
 
         public GeneralService()
         {
             client = new HttpClient
             {
-                BaseAddress = new Uri(baseUrl)
+                BaseAddress = new Uri(url)
             };
         }
 
