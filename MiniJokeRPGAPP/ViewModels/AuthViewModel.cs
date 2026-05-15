@@ -77,7 +77,7 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 await authService.Register(dto);
 
-                await Shell.Current.GoToAsync("..");
+                await Shell.Current.GoToAsync("//login");
             }
             catch (Exception ex)
             {
