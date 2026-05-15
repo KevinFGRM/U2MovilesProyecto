@@ -7,9 +7,9 @@ namespace MiniJokeRPGAPP.Services
 {
     public class GeneralService
     {
-        private readonly HttpClient client;
+        public readonly HttpClient client;
 
-        private string url = "https://localhost:7202/";
+        public string url = "https://localhost:7202/";
 
         public GeneralService()
         {
@@ -19,7 +19,7 @@ namespace MiniJokeRPGAPP.Services
             };
         }
 
-        protected async Task SetToken()
+        public async Task SetToken()
         {
             var token = await SecureStorage.GetAsync("Token");
 
@@ -30,7 +30,7 @@ namespace MiniJokeRPGAPP.Services
             }
         }
 
-        protected async Task VerificarError(HttpResponseMessage response)
+        public async Task VerificarError(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
