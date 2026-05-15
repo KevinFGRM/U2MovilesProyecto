@@ -1,6 +1,7 @@
 ﻿using Java.Nio.FileNio;
 using Microsoft.Extensions.Logging;
 using MiniJokeRPGAPP.Services;
+using MiniJokeRPGAPP.ViewModels;
 
 namespace MiniJokeRPGAPP
 {
@@ -26,6 +27,11 @@ namespace MiniJokeRPGAPP
             builder.Services.AddSingleton<PersonajesService>();
             builder.Services.AddSingleton<PartidasService>();
 
+
+            builder.Services.AddTransient<AuthViewModel>();
+            builder.Services.AddTransient<AmigosViewModel>();
+            builder.Services.AddTransient<MensajesViewModel>();
+            builder.Services.AddTransient<PartidasViewModel>();
 #endif
 
             return builder.Build();
