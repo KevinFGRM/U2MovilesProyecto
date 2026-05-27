@@ -5,8 +5,9 @@
              xmlns:views="clr-namespace:MiniJokeRPGAPP.Views.TabsViews"
              xmlns:juego="clr-namespace:MiniJokeRPGAPP.Views.TabsJuego"
              xmlns:viewmodels="clr-namespace:MiniJokeRPGAPP.ViewModels"
-             Title="MenuPage"
-             x:DataType="viewmodels:MenuViewModel">
+             Title="Mini Joke RPG"
+             x:DataType="viewmodels:MenuViewModel"
+             BackgroundColor="#121212">
     <Grid RowDefinitions="*,80">
     
         <Grid>
@@ -62,25 +63,83 @@
                 </juego:JuegoView.Triggers>
             </juego:JuegoView>
         </Grid>
-        
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" BackgroundColor="#1E1E1E" Padding="10">
 
-            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
-                <Button Text="🏠" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Partidas"></Button>
-                <Label Text="Partidas" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
-            </VerticalStackLayout>
+        <!-- BARRA DE NAVEGACIÓN INFERIOR (Estilo TabBar de Videojuego) -->
+        <Border Grid.Row="1" 
+                BackgroundColor="#1E1E24" 
+                StrokeThickness="1" 
+                Stroke="#2B2B36"
+                StrokeShape="RoundRectangle 16,16,0,0">
+            <!-- Esquinas superiores redondeadas -->
 
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
-                <Button Text="👥" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Amigos"></Button>
-                <Label Text="Amigos" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
-            </VerticalStackLayout>
+            <Grid ColumnDefinitions="*,*,*">
 
-            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
-                <Button Text="⚙" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Perfil"></Button>
-                <Label Text="Perfil" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
-            </VerticalStackLayout>
+                <!-- PESTAÑA: PARTIDAS -->
+                <Grid Grid.Column="0">
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
+                        <Label Text="⚔️" FontSize="18" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Partidas">
+                                    <Setter Property="TextColor" Value="DarkRed" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Partidas" FontSize="11" FontAttributes="Bold" TextColor="#888888" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Partidas">
+                                    <Setter Property="TextColor" Value="White" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                    <!-- El botón invisible cubre todo el cuadrante para facilitar el toque -->
+                    <Button BackgroundColor="Transparent" CornerRadius="0" Command="{Binding CambiarVistaCommand}" CommandParameter="Partidas" />
+                </Grid>
 
-        </Grid>
+                <!-- PESTAÑA: AMIGOS -->
+                <Grid Grid.Column="1">
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
+                        <Label Text="👥" FontSize="18" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Amigos">
+                                    <Setter Property="TextColor" Value="Indigo" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Amigos" FontSize="11" FontAttributes="Bold" TextColor="#888888" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Amigos">
+                                    <Setter Property="TextColor" Value="White" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                    <Button BackgroundColor="Transparent" CornerRadius="0" Command="{Binding CambiarVistaCommand}" CommandParameter="Amigos" />
+                </Grid>
+
+                <!-- PESTAÑA: PERFIL -->
+                <Grid Grid.Column="2">
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
+                        <Label Text="👤" FontSize="18" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Perfil">
+                                    <Setter Property="TextColor" Value="Indigo" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Perfil" FontSize="11" FontAttributes="Bold" TextColor="#888888" HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding VistaActual}" Value="Perfil">
+                                    <Setter Property="TextColor" Value="White" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                    <Button BackgroundColor="Transparent" CornerRadius="0" Command="{Binding CambiarVistaCommand}" CommandParameter="Perfil" />
+                </Grid>
+
+            </Grid>
+        </Border>
 
     </Grid>
 </ContentPage>

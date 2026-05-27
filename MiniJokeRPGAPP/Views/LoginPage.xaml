@@ -2,33 +2,146 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.LoginPage"
-             Title="Mini Joke RPG">
-    <Grid >
-        <VerticalStackLayout VerticalOptions="Center">
-            <Label Text="Iniciar Sesion" FontSize="28" HorizontalOptions="Center" Margin="0,-50,0,50" ></Label>
+             Title="Mini Joke RPG"
+             BackgroundColor="#121212">
+    <!-- Fondo general oscuro -->
 
-            <Entry Placeholder="Correo" Text="{Binding Correo}"></Entry>
+    <Grid>
+        <!-- CONTENEDOR PRINCIPAL -->
+        <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
 
-            <Entry Placeholder="Contraseña" IsPassword="True" Text="{Binding Contrasena}"></Entry>
-            
-            <Grid ColumnDefinitions="*, auto" Margin="10, 10, 10, 0" >
-                
-                <Label FontFamily="Verdana" TextColor="Black" Text="¿No tienes cuenta?" VerticalOptions="Center"></Label>
-                <Button Grid.Column="1" TextColor="Black" BackgroundColor="Transparent" Text="Registrarse" Command="{Binding IrRegistrarCommand}"></Button>
+            <VerticalStackLayout Spacing="25" WidthRequest="320" Padding="10">
 
-            </Grid>
-            
-            <Label Margin="10, 10, 10, 0" FontFamily="Verdana" TextColor="Red" Text="{Binding MensajeError}"></Label>
+                <!-- Logo o Título del Juego (Atracción Inicial) -->
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="⚔️" FontSize="44" HorizontalOptions="Center" Margin="0,0,0,5"/>
+                    <Label Text="MINI JOKE RPG" 
+                           TextColor="DarkRed" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           CharacterSpacing="2"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Prepara tu estrategia" 
+                           TextColor="#666666" 
+                           FontSize="12" 
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
 
-            <Button Margin="10, 10, 10, 0" Text="Iniciar Sesión" Command="{Binding LoginCommand}"></Button>
+                <!-- Tarjeta del Formulario -->
+                <Border BackgroundColor="#1E1E24"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20,24">
 
-        </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="16">
 
-        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsBusy}">
-            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White" />
-                <Label Text="Cargando..." TextColor="White" FontFamily="Verdana" HorizontalOptions="Center" />
+                        <Label Text="INICIAR SESIÓN" 
+                               TextColor="#E0E0E0" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               CharacterSpacing="1"
+                               Margin="0,0,0,5"/>
+
+                        <!-- Input Correo -->
+                        <Border BackgroundColor="#15151A"
+                                StrokeThickness="1"
+                                Stroke="#2B2B36"
+                                StrokeShape="RoundRectangle 8"
+                                HeightRequest="44"
+                                Padding="12,0">
+                            <Entry Placeholder="Correo electrónico" 
+                                   PlaceholderColor="#555555"
+                                   Text="{Binding Correo}" 
+                                   TextColor="White" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <!-- Input Contraseña -->
+                        <Border BackgroundColor="#15151A"
+                                StrokeThickness="1"
+                                Stroke="#2B2B36"
+                                StrokeShape="RoundRectangle 8"
+                                HeightRequest="44"
+                                Padding="12,0">
+                            <Entry Placeholder="Contraseña" 
+                                   PlaceholderColor="#555555"
+                                   IsPassword="True" 
+                                   Text="{Binding Contrasena}" 
+                                   TextColor="White" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+
+
+                        <!-- Footer: Enlace para Registrarse -->
+                        <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Center" WidthRequest="260">
+                            <Label Text="¿No tienes cuenta?" 
+                           TextColor="#888888" 
+                           FontSize="13"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Start"
+                           Margin="0,0,5,0"/>
+
+                            <Button Grid.Column="1" 
+                            BackgroundColor="Transparent" 
+                            Text="Registrarse" 
+                            TextColor="Indigo"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Padding="0"
+                            HeightRequest="30"
+                            Command="{Binding IrRegistrarCommand}"/>
+                        </Grid>
+                        
+                        <!-- Mensaje de Error (si existe) -->
+                        <Label TextColor="Tomato" 
+                               Text="{Binding MensajeError}" 
+                               FontSize="12"
+                               FontAttributes="Italic"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,2">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding MensajeError}" Value="">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+
+                        <!-- Botón Principal (DarkRed) -->
+                        <Button Text="ENTRAR AL JUEGO" 
+                                Command="{Binding LoginCommand}"
+                                BackgroundColor="DarkRed"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                CharacterSpacing="1"
+                                HeightRequest="44"
+                                CornerRadius="8"
+                                Margin="0,5,0,0"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- PANTALLA DE CARGA (OVERLAY) -->
+        <Grid BackgroundColor="#D0000000" IsVisible="{Binding IsBusy}">
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="DarkRed" Scale="1.2"/>
+                <Label Text="CONECTANDO AL SERVIDOR..." 
+                       TextColor="#888888" 
+                       FontSize="11"
+                       FontAttributes="Bold"
+                       CharacterSpacing="1"
+                       HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Grid>
+
     </Grid>
 </ContentPage>

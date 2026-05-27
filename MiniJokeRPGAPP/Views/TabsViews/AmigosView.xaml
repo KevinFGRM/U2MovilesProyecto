@@ -1,64 +1,189 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MiniJokeRPGAPP.Views.TabsViews.AmigosView">
-    <VerticalStackLayout>
-        
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Margin="0,15">
-            <Button Text="Todos" Command="{Binding CargarUsuariosCommand}"></Button>
-            <Button Text="Pendientes" Command="{Binding CargarPendientesCommand}"></Button>
-            <Button Text="Amigos" Command="{Binding CargarAmigosCommand}"></Button>
-        </HorizontalStackLayout>
-        
-        <Label Text="{Binding MensajeError}" TextColor="Red" HorizontalOptions="Center" Margin="0,0,0,10"></Label>
-        
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
-        
-        <CollectionView ItemsSource="{Binding Usuarios}">
+             x:Class="MiniJokeRPGAPP.Views.TabsViews.AmigosView"
+             BackgroundColor="#121212">
+    <!-- Mismo fondo oscuro profundo -->
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+
+        <!-- PESTAÑAS DE FILTRO (Estilo Menú de RPG) -->
+        <Grid Grid.Row="0"  ColumnDefinitions="*,*,*" ColumnSpacing="10"
+                               Margin="10,15">
+            <Button Text="TODOS" 
+                    Command="{Binding CargarUsuariosCommand}"
+                    BackgroundColor="#1E1E24"
+                    TextColor="#E0E0E0"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    HeightRequest="36"
+                    Padding="15,0"
+                    CornerRadius="6">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding PestañaSeleccionada}" Value="Todos">
+                        <Setter Property="BackgroundColor" Value="DarkRed"/>
+                        <Setter Property="TextColor" Value="White"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+
+            <Button Text="PENDIENTES" Grid.Column="1"
+                    Command="{Binding CargarPendientesCommand}"
+                    BackgroundColor="#1E1E24"
+                    TextColor="#E0E0E0"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    HeightRequest="36"
+                    Padding="15,0"
+                    CornerRadius="6">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding PestañaSeleccionada}" Value="Pendientes">
+                        <Setter Property="BackgroundColor" Value="Indigo"/>
+                        <Setter Property="TextColor" Value="White"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+
+            <Button Text="AMIGOS"  Grid.Column="2"
+                    Command="{Binding CargarAmigosCommand}"
+                    BackgroundColor="#1E1E24"
+                    TextColor="#E0E0E0"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    HeightRequest="36"
+                    Padding="15,0"
+                    CornerRadius="6">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding PestañaSeleccionada}" Value="Amigos">
+                        <Setter Property="BackgroundColor" Value="Green"/>
+                        <Setter Property="TextColor" Value="White"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+        </Grid>
+
+        <!-- Mensaje de Error Estilizado -->
+        <Label Grid.Row="1" 
+               Text="{Binding MensajeError}" 
+               TextColor="Tomato" 
+               FontSize="13"
+               FontAttributes="Italic"
+               HorizontalOptions="Center" 
+               Margin="10"/>
+
+        <!-- Indicador de Carga con color de acento Índigo -->
+        <ActivityIndicator Grid.Row="2" 
+                           IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}"
+                           Color="Indigo"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,10"/>
+
+        <!-- LISTA DE USUARIOS / AMIGOS -->
+        <CollectionView Grid.Row="3" 
+                        ItemsSource="{Binding Usuarios}"
+                        Margin="10,0">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    
-                    <VerticalStackLayout Margin="10,5" Padding="15" BackgroundColor="#2B2B2B" Spacing="10">
-                        
-                        <Label Text="{Binding NombreUsuario}" FontSize="22" FontAttributes="Bold" TextColor="White"></Label>
-                        <Button Text="Agregar amigo" IsVisible="{Binding EsNinguno}" 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AgregarAmigoCommand}" 
-                                CommandParameter="{Binding .}"></Button>
-                        
-                        <HorizontalStackLayout Spacing="10" IsVisible="False">
-                            
-                            <HorizontalStackLayout.Triggers>
-                                <MultiTrigger TargetType="HorizontalStackLayout">
-                                    <MultiTrigger.Conditions>
-                                        <BindingCondition Binding="{Binding EsPendiente}" Value="True"></BindingCondition>
-                                        <BindingCondition Binding="{Binding SoyEmisor}" Value="False"></BindingCondition>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="IsVisible" Value="True"></Setter>
-                                </MultiTrigger>
-                            </HorizontalStackLayout.Triggers>
-                            
-                            <Button Text="Aceptar" 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AceptarAmigoCommand}" 
-                                    CommandParameter="{Binding .}"></Button>
-                        </HorizontalStackLayout>
-                        
-                        <HorizontalStackLayout Spacing="10" IsVisible="{Binding SoyEmisor}">
-                            <Label Text="No ha aceptado la solicitud"></Label>
-                        </HorizontalStackLayout>
-                        
-                        <HorizontalStackLayout Spacing="10" IsVisible="{Binding EsAmigo}">
-                            <Button Text="Chat" 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AbrirChatCommand}" 
-                                    CommandParameter="{Binding .}"></Button>
-                            <Button Text="Partida" 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.CrearPartidaCommand}" 
-                                    CommandParameter="{Binding .}"></Button>
-                        </HorizontalStackLayout>
-                        
-                    </VerticalStackLayout>
-                    
+                    <!-- Tarjeta con bordes redondeados consistente (#1E1E24) -->
+                    <Border BackgroundColor="#1E1E24"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            Margin="5,2">
+
+                        <Grid Padding="16" ColumnDefinitions="*, Auto">
+
+                            <!-- COLUMNA IZQUIERDA: Nombre y Estados Secundarios -->
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
+                                <Label Text="{Binding NombreUsuario}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#E0E0E0"/>
+
+                                <!-- Texto sutil para cuando la solicitud está pendiente de aceptación -->
+                                <HorizontalStackLayout IsVisible="{Binding SoyEmisor}">
+                                    <Label Text="Solicitud enviada (pendiente)" 
+                                           FontSize="12" 
+                                           TextColor="#888888"
+                                           FontAttributes="Italic"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+
+                            <!-- COLUMNA DERECHA: Botones de Acción según el Estado -->
+                            <StackLayout Grid.Column="1" VerticalOptions="Center">
+
+                                <!-- CASO 1: Agregar Amigo (No son nada aún) -->
+                                <Button Text="AGREGAR" 
+                                        IsVisible="{Binding EsNinguno}" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AgregarAmigoCommand}" 
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="DarkRed"
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        HeightRequest="36"
+                                        Padding="15,0"
+                                        CornerRadius="6"/>
+
+                                <!-- CASO 2: Recibiste solicitud (Aceptar) -->
+                                <HorizontalStackLayout Spacing="0" IsVisible="False">
+                                    <HorizontalStackLayout.Triggers>
+                                        <MultiTrigger TargetType="HorizontalStackLayout">
+                                            <MultiTrigger.Conditions>
+                                                <BindingCondition Binding="{Binding EsPendiente}" Value="True"/>
+                                                <BindingCondition Binding="{Binding SoyEmisor}" Value="False"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="IsVisible" Value="True"/>
+                                        </MultiTrigger>
+                                    </HorizontalStackLayout.Triggers>
+
+                                    <Button Text="ACEPTAR" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AceptarAmigoCommand}" 
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Indigo"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="15,0"
+                                            CornerRadius="6"/>
+                                </HorizontalStackLayout>
+
+                                <!-- CASO 3: Ya son amigos (Chat y Partida) -->
+                                <HorizontalStackLayout Spacing="8" IsVisible="{Binding EsAmigo}">
+                                    <Button Text="CHAT" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AbrirChatCommand}" 
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#2B2B36"
+                                            TextColor="#E0E0E0"
+                                            FontAttributes="Bold"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            CornerRadius="6"/>
+
+                                    <Button Text="RETAR" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.CrearPartidaCommand}" 
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="DarkRed"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            FontSize="12"
+                                            HeightRequest="36"
+                                            Padding="12,0"
+                                            CornerRadius="6"/>
+                                </HorizontalStackLayout>
+
+                            </StackLayout>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentView>

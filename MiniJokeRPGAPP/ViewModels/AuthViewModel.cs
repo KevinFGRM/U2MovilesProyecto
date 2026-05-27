@@ -49,7 +49,7 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 if (response != null)
                 {
-                    await Shell.Current.GoToAsync("MenuPage");
+                    await Shell.Current.GoToAsync("//MenuPage");
                 }
             }
             catch (Exception ex)

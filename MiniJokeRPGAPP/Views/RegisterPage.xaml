@@ -2,21 +2,146 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.RegisterPage"
-             Title="RegisterPage">
+             Title="Unirse a la Aventura"
+             BackgroundColor="#121212">
+    <!-- Mismo fondo oscuro profundo -->
 
-    <VerticalStackLayout VerticalOptions="Center">
-        <Label Text="Registro" FontSize="30" HorizontalOptions="Center"/>
-        <Entry Placeholder="Nombre de usuario" Text="{Binding NombreUsuario}" />
+    <Grid>
+        <!-- CONTENEDOR PRINCIPAL CON SCROLL -->
+        <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
 
-        <Entry Placeholder="Correo" Text="{Binding Correo}" />
-        <Entry Placeholder="Contraseña" IsPassword="True" Text="{Binding Contrasena}" />
+            <VerticalStackLayout Spacing="25" WidthRequest="320" Padding="10">
 
-        <Grid ColumnDefinitions="*, auto" Margin="10, 10, 10, 0" >
-            <Label FontFamily="Verdana" TextColor="Black" Text="¿Ya estas registrado?" VerticalOptions="Center"></Label>
-            <Button FontFamily="Verdana" Grid.Column="1" Text="Iniciar Sesión" TextColor="#344e41" Padding="0,0,5,0" Command="{Binding IrLoginCommand}"
-                    BackgroundColor="Transparent" VerticalOptions="Center"></Button>
-        </Grid>
-        <Label Margin="10, 10, 10, 0" FontFamily="Verdana" TextColor="Red" Text="{Binding MensajeError}"></Label>
-        <Button Text="Registrarse" Command="{Binding RegisterCommand}" />
-    </VerticalStackLayout>
+                <!-- Encabezado de la página -->
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="🛡️" FontSize="44" HorizontalOptions="Center" Margin="0,0,0,5"/>
+                    <Label Text="NUEVO HÉROE" 
+                           TextColor="Indigo" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           CharacterSpacing="2"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Crea tu identidad en el juego" 
+                           TextColor="#666666" 
+                           FontSize="12" 
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <!-- Tarjeta del Formulario de Registro -->
+                <Border BackgroundColor="#1E1E24"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20,24">
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <Label Text="REGISTRO" 
+                               TextColor="#E0E0E0" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               CharacterSpacing="1"
+                               Margin="0,0,0,5"/>
+
+                        <!-- Input Nombre de Usuario -->
+                        <Border BackgroundColor="#15151A"
+                                StrokeThickness="1"
+                                Stroke="#2B2B36"
+                                StrokeShape="RoundRectangle 8"
+                                HeightRequest="44"
+                                Padding="12,0">
+                            <Entry Placeholder="Nombre de usuario" 
+                                   PlaceholderColor="#555555"
+                                   Text="{Binding NombreUsuario}" 
+                                   TextColor="White" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <!-- Input Correo -->
+                        <Border BackgroundColor="#15151A"
+                                StrokeThickness="1"
+                                Stroke="#2B2B36"
+                                StrokeShape="RoundRectangle 8"
+                                HeightRequest="44"
+                                Padding="12,0">
+                            <Entry Placeholder="Correo electrónico" 
+                                   PlaceholderColor="#555555"
+                                   Text="{Binding Correo}" 
+                                   TextColor="White" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <!-- Input Contraseña -->
+                        <Border BackgroundColor="#15151A"
+                                StrokeThickness="1"
+                                Stroke="#2B2B36"
+                                StrokeShape="RoundRectangle 8"
+                                HeightRequest="44"
+                                Padding="12,0">
+                            <Entry Placeholder="Contraseña" 
+                                   PlaceholderColor="#555555"
+                                   IsPassword="True" 
+                                   Text="{Binding Contrasena}" 
+                                   TextColor="White" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                        <!-- Footer: Enlace para Volver al Login -->
+                        <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Center" WidthRequest="260">
+                            <Label Text="¿Ya estás registrado?" 
+                           TextColor="#888888" 
+                           FontSize="13"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Start"
+                           Margin="0,0,5,0"/>
+
+                            <Button Grid.Column="1" 
+                            BackgroundColor="Transparent" 
+                            Text="Iniciar Sesión" 
+                            TextColor="DarkRed"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Padding="0"
+                            HeightRequest="30"
+                            Command="{Binding IrLoginCommand}"/>
+                        </Grid>
+
+                        <!-- Mensaje de Error Estilizado -->
+                        <Label TextColor="Tomato" 
+                               Text="{Binding MensajeError}" 
+                               FontSize="12"
+                               FontAttributes="Italic"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,2">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding MensajeError}" Value="">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+
+                        <!-- Botón Principal de Registro (Acento Índigo) -->
+                        <Button Text="CREAR CUENTA" 
+                                Command="{Binding RegisterCommand}"
+                                BackgroundColor="Indigo"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                CharacterSpacing="1"
+                                HeightRequest="44"
+                                CornerRadius="8"
+                                Margin="0,5,0,0"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

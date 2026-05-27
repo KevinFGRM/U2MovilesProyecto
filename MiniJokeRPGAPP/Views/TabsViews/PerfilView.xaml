@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MiniJokeRPGAPP.Views.TabsViews.PerfilView">
-    <VerticalStackLayout
-        VerticalOptions="Center"
-        HorizontalOptions="Center">
+             x:Class="MiniJokeRPGAPP.Views.TabsViews.PerfilView"
+             BackgroundColor="#121212">
+    <!-- Fondo oscuro general -->
 
-        <Button Text="Cerrar Sesión" Command="{Binding LogoutCommand}"></Button>
+    <!-- Grid para centrar la tarjeta en la pantalla -->
+    <Grid VerticalOptions="Center" 
+          HorizontalOptions="Center" 
+          Padding="20">
 
-    </VerticalStackLayout>
+        <!-- Tarjeta de Perfil Sencilla -->
+        <Border BackgroundColor="#1E1E24"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12"
+                WidthRequest="280"
+                Padding="24">
+
+            <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+
+                <!-- Icono de Cuenta o Avatar Simbólico -->
+                <Label Text="👤" 
+                       FontSize="40" 
+                       HorizontalOptions="Center" 
+                       Margin="0,0,0,5"/>
+
+                <!-- Texto de Contexto Opcional (Mantiene la simplicidad) -->
+                <Label Text="OPCIONES DE CUENTA" 
+                       TextColor="#888888" 
+                       FontSize="11" 
+                       FontAttributes="Bold"
+                       CharacterSpacing="1"
+                       HorizontalOptions="Center" />
+
+                <!-- Botón de Salida Estilizado -->
+                <Button Text="CERRAR SESIÓN" 
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="DarkRed"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        FontSize="13"
+                        HeightRequest="42"
+                        WidthRequest="200"
+                        CornerRadius="8" />
+
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
 </ContentView>

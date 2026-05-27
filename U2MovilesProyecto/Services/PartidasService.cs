@@ -120,8 +120,8 @@ namespace U2MovilesProyecto.Services
             var response = partidas.Select(p =>
             {
                 var dto = mapper.Map<PartidaResponseDTO>(p);
-                dto.Jugador1 = p.Jugador1 == usuario ? "Tú" : p.Jugador1Navigation.NombreUsuario;
-                dto.Jugador2 = p.Jugador2 == usuario ? "Tú" : p.Jugador2Navigation.NombreUsuario;
+                dto.Jugador1 = p.Jugador1 == usuario ? $"{p.Jugador1Navigation.NombreUsuario} (Tú)" : p.Jugador1Navigation.NombreUsuario;
+                dto.Jugador2 = p.Jugador2 == usuario ? $"{p.Jugador2Navigation.NombreUsuario} (Tú)" : p.Jugador2Navigation.NombreUsuario;
                 return dto;
             }).ToList();
 

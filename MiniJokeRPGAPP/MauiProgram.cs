@@ -38,9 +38,6 @@ namespace MiniJokeRPGAPP
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<MenuPage>();
-            builder.Services.AddTransient<JuegoPage>();
-            builder.Services.AddTransient<PersonajesPage>();
-            builder.Services.AddTransient<MensajesPage>();
 #endif
 
             return builder.Build();

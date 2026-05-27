@@ -1,238 +1,148 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MiniJokeRPGAPP.Views.TabsJuego.PersonajesView">
-    <Grid BackgroundColor="#1E1E1E">
+             x:Class="MiniJokeRPGAPP.Views.TabsJuego.PersonajesView"
+             BackgroundColor="#121212">
+    <!-- Mismo fondo oscuro profundo -->
+    <Grid>
 
-        <CollectionView
-            ItemsSource="{Binding Personajes}"
-            Margin="10">
+        <CollectionView ItemsSource="{Binding Personajes}" Margin="15,10">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout
-            Orientation="Vertical"
-            ItemSpacing="15"/>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="20"/>
             </CollectionView.ItemsLayout>
+
+            <!-- ENCABEZADO DE LA VISTA -->
             <CollectionView.Header>
-
-                <Border
-                    Padding="15"
-                    Margin="0,0,0,10"
-                    BackgroundColor="#2B2B2B"
-                    StrokeShape="RoundRectangle 20">
-
-                    <VerticalStackLayout>
-
-                        <Label
-                            Text="Selecciona tu personaje"
-                            FontSize="28"
-                            FontAttributes="Bold"
-                            TextColor="White"/>
-
-                        <Label
-                            Text="{Binding EstadoPartida}"
-                            FontSize="14"
-                            TextColor="#BDBDBD"/>
-
+                <Border BackgroundColor="Transparent" 
+                        StrokeThickness="0" 
+                        Padding="5,10,5,15">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="SELECCIONA TU PERSONAJE" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="DarkRed"
+                               CharacterSpacing="1"/>
+                        <Label Text="{Binding EstadoPartida}" 
+                               FontSize="13" 
+                               TextColor="#888888"
+                               FontAttributes="Italic"/>
                     </VerticalStackLayout>
-
                 </Border>
-
             </CollectionView.Header>
 
+            <!-- PLANTILLA DE CADA PERSONAJE -->
             <CollectionView.ItemTemplate>
-
                 <DataTemplate>
+                    <Border BackgroundColor="#1E1E24"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="16"
+                            Margin="0,5">
 
-                    <Border
-                        Margin="0,0,0,15"
-                        Padding="15"
-                        BackgroundColor="#2B2B2B"
-                        StrokeShape="RoundRectangle 25">
+                        <VerticalStackLayout Spacing="16">
 
-                        <VerticalStackLayout Spacing="15">
+                            <!-- Nombre del Héroe -->
+                            <Label Text="{Binding Nombre}" 
+                                   FontSize="22" 
+                                   FontAttributes="Bold" 
+                                   HorizontalOptions="Center" 
+                                   TextColor="#E0E0E0"
+                                   CharacterSpacing="0.5"/>
 
-                            <!-- NOMBRE -->
-                            <Label
-                                Text="{Binding Nombre}"
-                                FontSize="28"
-                                FontAttributes="Bold"
-                                HorizontalOptions="Center"
-                                TextColor="White"/>
+                            <!-- GRILLA DE ESTADÍSTICAS (Compacta y Limpia) -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 
-                            <!-- STATS -->
-                            <Grid
-                                ColumnDefinitions="*,*"
-                                RowDefinitions="Auto,Auto"
-                                ColumnSpacing="15"
-                                RowSpacing="15">
-
-                                <Border
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Padding="10"
-                                    BackgroundColor="#3A3A3A"
-                                    StrokeShape="RoundRectangle 15">
-
-                                    <VerticalStackLayout>
-
-                                        <Label
-                                            Text="❤️ Vida"
-                                            TextColor="#FF8A80"/>
-
-                                        <Label
-                                            Text="{Binding VidaBase}"
-                                            FontSize="20"
-                                            TextColor="White"/>
-
-                                    </VerticalStackLayout>
-
+                                <!-- Vida -->
+                                <Border Grid.Row="0" Grid.Column="0" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="❤️" VerticalOptions="Center"/>
+                                        <VerticalStackLayout>
+                                            <Label Text="VIDA" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                            <Label Text="{Binding VidaBase}" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
                                 </Border>
 
-                                <Border
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Padding="10"
-                                    BackgroundColor="#3A3A3A"
-                                    StrokeShape="RoundRectangle 15">
-
-                                    <VerticalStackLayout>
-
-                                        <Label
-                                            Text="🔵 Mana"
-                                            TextColor="#82B1FF"/>
-
-                                        <Label
-                                            Text="{Binding ManaBase}"
-                                            FontSize="20"
-                                            TextColor="White"/>
-
-                                    </VerticalStackLayout>
-
+                                <!-- Maná -->
+                                <Border Grid.Row="0" Grid.Column="1" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="🔮" VerticalOptions="Center"/>
+                                        <VerticalStackLayout>
+                                            <Label Text="MANÁ" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                            <Label Text="{Binding ManaBase}" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
                                 </Border>
 
-                                <Border
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Padding="10"
-                                    BackgroundColor="#3A3A3A"
-                                    StrokeShape="RoundRectangle 15">
-
-                                    <VerticalStackLayout>
-
-                                        <Label
-                                            Text="⚔ Ataque"
-                                            TextColor="#FFD180"/>
-
-                                        <Label
-                                            Text="{Binding AtaqueBase}"
-                                            FontSize="20"
-                                            TextColor="White"/>
-
-                                    </VerticalStackLayout>
-
+                                <!-- Ataque -->
+                                <Border Grid.Row="1" Grid.Column="0" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="⚔️" VerticalOptions="Center"/>
+                                        <VerticalStackLayout>
+                                            <Label Text="ATAQUE" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                            <Label Text="{Binding AtaqueBase}" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
                                 </Border>
 
-                                <Border
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Padding="10"
-                                    BackgroundColor="#3A3A3A"
-                                    StrokeShape="RoundRectangle 15">
-
-                                    <VerticalStackLayout>
-
-                                        <Label
-                                            Text="🛡 Defensa"
-                                            TextColor="#A5D6A7"/>
-
-                                        <Label
-                                            Text="{Binding DefensaBase}"
-                                            FontSize="20"
-                                            TextColor="White"/>
-
-                                    </VerticalStackLayout>
-
+                                <!-- Defensa -->
+                                <Border Grid.Row="1" Grid.Column="1" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                                        <Label Text="🛡️" VerticalOptions="Center"/>
+                                        <VerticalStackLayout>
+                                            <Label Text="DEFENSA" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                            <Label Text="{Binding DefensaBase}" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
                                 </Border>
-
                             </Grid>
 
-                            <!-- HABILIDADES -->
-                            <VerticalStackLayout
-                                BindableLayout.ItemsSource="{Binding Habilidades}">
+                            <!-- SECCIÓN DE HABILIDADES -->
+                            <Label Text="HABILIDADES" FontSize="12" FontAttributes="Bold" TextColor="#888888" CharacterSpacing="1" Margin="0,5,0,-5"/>
 
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Habilidades}" Spacing="8">
                                 <BindableLayout.ItemTemplate>
-
                                     <DataTemplate>
+                                        <!-- Sub-tarjeta con acento sutil Índigo para Habilidades -->
+                                        <Border BackgroundColor="#15151A" 
+                                                StrokeThickness="1"
+                                                Stroke="Indigo"
+                                                StrokeShape="RoundRectangle 10" 
+                                                Padding="12">
+                                            <VerticalStackLayout Spacing="4">
 
-                                        <Border
-                                            Margin="0,0,0,10"
-                                            Padding="12"
-                                            BackgroundColor="#3A3A3A"
-                                            StrokeShape="RoundRectangle 18">
+                                                <Label Text="{Binding Nombre}" FontSize="14" FontAttributes="Bold" TextColor="White"/>
+                                                <Label Text="{Binding Descripcion}" FontSize="12" TextColor="#BBBBBB" LineHeight="1.2"/>
 
-                                            <VerticalStackLayout>
-
-                                                <Label
-                                                    Text="{Binding Nombre}"
-                                                    FontSize="20"
-                                                    FontAttributes="Bold"
-                                                    TextColor="White"/>
-
-                                                <Label
-                                                    Text="{Binding Descripcion}"
-                                                    FontSize="14"
-                                                    TextColor="#D0D0D0"/>
-
-                                                <Grid
-                                                    Margin="0,10,0,0"
-                                                    ColumnDefinitions="*,*,*">
-
-                                                    <Label
-                                                        Text="{Binding CostoMana, StringFormat='Mana: {0}'}"
-                                                        TextColor="#82B1FF"/>
-
-                                                    <Label
-                                                        Grid.Column="1"
-                                                        Text="{Binding Dano, StringFormat='Daño: {0}'}"
-                                                        TextColor="#FF8A80"/>
-
-                                                    <Label
-                                                        Grid.Column="2"
-                                                        Text="{Binding Curacion, StringFormat='Curación: {0}'}"
-                                                        TextColor="#A5D6A7"/>
-
+                                                <!-- Atributos de la habilidad en línea -->
+                                                <Grid Margin="0,4,0,0" ColumnDefinitions="*,*,*">
+                                                    <Label Text="{Binding CostoMana, StringFormat='🔮 {0} PM'}" FontSize="11" TextColor="#90CAF9"/>
+                                                    <Label Grid.Column="1" Text="{Binding Dano, StringFormat='💥 {0} DMG'}" FontSize="11" TextColor="Tomato"/>
+                                                    <Label Grid.Column="2" Text="{Binding Curacion, StringFormat='💚 {0} HP'}" FontSize="11" TextColor="LightGreen"/>
                                                 </Grid>
 
                                             </VerticalStackLayout>
-
                                         </Border>
-
                                     </DataTemplate>
-
                                 </BindableLayout.ItemTemplate>
-
                             </VerticalStackLayout>
 
-                            <!-- BOTON -->
-                            <Button
-                                Text="Seleccionar personaje"
-                                FontSize="18"
-                                HeightRequest="55"
-                                Command="{Binding
-                                Source={RelativeSource AncestorType={x:Type ContentView}},
-                                Path=BindingContext.SeleccionarPersonajeCommand}"
-                                CommandParameter="{Binding .}"/>
+                            <!-- BOTÓN ACCIÓN PRINCIPAL (DarkRed) -->
+                            <Button Text="ELEGIR HÉROE" 
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    BackgroundColor="DarkRed"
+                                    HeightRequest="44" 
+                                    CornerRadius="8"
+                                    Margin="0,5,0,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.SeleccionarPersonajeCommand}"
+                                    CommandParameter="{Binding .}"/>
 
                         </VerticalStackLayout>
-
                     </Border>
-
                 </DataTemplate>
-
             </CollectionView.ItemTemplate>
-
         </CollectionView>
-
     </Grid>
-
 </ContentView>

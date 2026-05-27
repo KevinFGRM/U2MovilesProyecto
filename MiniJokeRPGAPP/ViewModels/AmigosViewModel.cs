@@ -27,8 +27,12 @@ namespace MiniJokeRPGAPP.ViewModels
         [ObservableProperty]
         string nombreUsuario = string.Empty;
 
+        [ObservableProperty]
+        string pestañaSeleccionada = "Todos";
+
         public MenuViewModel MenuVM { get; set; } = null!;
 
+        
         public AmigosViewModel(
             AmigosService amigosService,
             PartidasService partidasService)
@@ -45,6 +49,7 @@ namespace MiniJokeRPGAPP.ViewModels
             {
                 IsBusy = true;
 
+
                 Usuarios.Clear();
 
                 var lista = await amigosService.GetUsuarios();
@@ -53,6 +58,7 @@ namespace MiniJokeRPGAPP.ViewModels
                 {
                     Usuarios.Add(item);
                 }
+                PestañaSeleccionada = "Todos";
             }
             catch (Exception ex)
             {
@@ -84,6 +90,7 @@ namespace MiniJokeRPGAPP.ViewModels
                         EstadoAmistad = "aceptado"
                     });
                 }
+                PestañaSeleccionada = "Amigos";
             }
             catch (Exception ex)
             {
@@ -110,6 +117,7 @@ namespace MiniJokeRPGAPP.ViewModels
                 {
                     Usuarios.Add(item);
                 }
+                PestañaSeleccionada = "Pendientes";
             }
             catch (Exception ex)
             {
