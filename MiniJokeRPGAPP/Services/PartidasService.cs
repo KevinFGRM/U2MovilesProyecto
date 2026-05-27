@@ -41,7 +41,7 @@ namespace MiniJokeRPGAPP.Services
             return await response.Content.ReadFromJsonAsync<List<PartidaResponseDTO>>() ?? [];
         }
 
-        public async Task<PartidaResponseDTO?> EntrarPartida(int idPartida)
+        public async Task<EntrarPartidaResult?> EntrarPartida(int idPartida)
         {
             await SetToken();
 
@@ -49,7 +49,7 @@ namespace MiniJokeRPGAPP.Services
 
             await VerificarError(response);
 
-            return await response.Content.ReadFromJsonAsync<PartidaResponseDTO>();
+            return await response.Content.ReadFromJsonAsync<EntrarPartidaResult>();
         }
 
         public async Task<bool> RealizarAccion( int idPartida, RealizarAccionDto dto)

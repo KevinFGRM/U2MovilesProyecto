@@ -62,12 +62,23 @@
 
     public class EstadoPartidaDto
     {
-        public int VidaJugador { get; set; }
-        public int VidaEnemigo { get; set; }
-        public int ManaJugador { get; set; }
-        public int ManaEnemigo { get; set; }
-        public int TurnoActual { get; set; }
-        public int IdUsuarioTurno { get; set; }
+        public string? Jugador1 { get; set; } // usuario
+        public string? Jugador2 { get; set; } // usuario
+        public int Personaje1 { get; set; }
+        public int Personaje2 { get; set; }
+        public int VidaJugador1 { get; set; }
+        public int VidaEnemigo2 { get; set; }
+        public int ManaJugador1 { get; set; }
+        public int ManaEnemigo2 { get; set; }
+        public bool MiTurno { get; set; }
         public string Estado { get; set; } = "";
+        public List<HabilidadResponseDto> HabilidadesJugador1 { get; set; } = new List<HabilidadResponseDto>();
     }
+
+    public class EntrarPartidaResult
+    {
+        public PartidaResponseDTO? Pendiente { get; set; }
+        public EstadoPartidaDto? Partida { get; set; }
+    }
+
 }

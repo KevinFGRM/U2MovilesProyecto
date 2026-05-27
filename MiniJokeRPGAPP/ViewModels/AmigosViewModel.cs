@@ -161,7 +161,14 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 await amigosService.AceptarAmigo(dto);
 
-                await CargarPendientes();
+                if(PestañaSeleccionada == "Todos")
+                {
+                    await CargarUsuarios();
+                }
+                else
+                {
+                    await CargarPendientes();
+                }
             }
             catch (Exception ex)
             {

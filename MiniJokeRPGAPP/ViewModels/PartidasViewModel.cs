@@ -32,19 +32,7 @@ namespace MiniJokeRPGAPP.ViewModels
         int idPersonaje;
 
         [ObservableProperty]
-        int vidaJugador;
-
-        [ObservableProperty]
-        int vidaEnemigo;
-
-        [ObservableProperty]
-        int manaJugador;
-
-        [ObservableProperty]
-        string estadoPartida;
-
-        [ObservableProperty]
-        bool esMiTurno;
+        EstadoPartidaDto? estadoPartida;
 
         [ObservableProperty]
         PersonajeResponseDto? personajeSeleccionado;
@@ -71,8 +59,10 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 foreach (var item in lista)
                 {
+                    item.Estado = item.Estado == "esperandopersonajes" ? "Esperando Personajes" : item.Estado == "activa" ? "Activa" : item.Estado == "finalizada" ? "Finalizada" : item.Estado;
                     Partidas.Add(item);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -94,15 +84,21 @@ namespace MiniJokeRPGAPP.ViewModels
                 var response = await partidasService.EntrarPartida(partida.IdPartida);
                 if (response != null)
                 {
-                    if (response.JugadorActualEligio)
+                    if (response.Pendiente != null && response.Pendiente.JugadorActualEligio)
                     {
+                        // mandar a una vista de espera o algo asi
                         MenuVM.VistaActual = "Juego";
                     }
-                    else
+                    else if(response.Pendiente != null && !response.Pendiente.JugadorActualEligio)
                     {
                         MenuVM.VistaActual = "Personajes";
-                        IdPartida = partida.IdPartida;
+                        IdPartida = response.Pendiente.IdPartida;
                         await CargarPersonajes();
+                    }
+                    else if(response.Pendiente == null && response.Partida != null)
+                    {
+                        MenuVM.VistaActual = "Juego";
+                        EstadoPartida = response.Partida;
                     }
 
                 }
@@ -233,10 +229,6 @@ namespace MiniJokeRPGAPP.ViewModels
         {
             var estado = await partidasService.ObtenerEstado(IdPartida);
 
-            VidaJugador = estado.VidaJugador;
-            VidaEnemigo = estado.VidaEnemigo;
-            ManaJugador = estado.ManaJugador;
-            EstadoPartida = estado.Estado;
 
         }
     }

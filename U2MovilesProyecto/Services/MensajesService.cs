@@ -9,15 +9,18 @@ namespace U2MovilesProyecto.Services
     public class MensajesService
     {
         private readonly Repository<Mensajes> mensajesRepository;
+        private readonly Repository<Usuarios> usuariosRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IMapper mapper;
 
         public MensajesService(
             Repository<Mensajes> mensajesRepository,
+            Repository<Usuarios> usuariosRepository,
             IHttpContextAccessor httpContextAccessor,
             IMapper mapper)
         {
             this.mensajesRepository = mensajesRepository;
+            this.usuariosRepository = usuariosRepository;
             this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
         }
@@ -68,7 +71,7 @@ namespace U2MovilesProyecto.Services
 
             var response = new ListaMensajesDTO
             {
-                NombreAmigo = amigo ?? "",
+                NombreAmigo = amigo ?? usuariosRepository.Get(idUsuario2)?.NombreUsuario ?? "",
                 Mensajes = listaMensajes
             };
 
