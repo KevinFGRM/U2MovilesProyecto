@@ -1,9 +1,12 @@
+using MiniJokeRPGAPP.ViewModels;
+
 namespace MiniJokeRPGAPP.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+	public LoginPage(AuthViewModel viewModel)
 	{
 		InitializeComponent();
+		BindingContext = viewModel;
 	}
 }

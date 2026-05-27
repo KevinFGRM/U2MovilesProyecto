@@ -19,7 +19,7 @@ namespace MiniJokeRPGAPP.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<List<MensajeResponseDTO>> ObtenerChat(int idUsuario)
+        public async Task<ListaMensajesDTO> ObtenerChat(int idUsuario)
         {
             await SetToken();
 
@@ -27,7 +27,7 @@ namespace MiniJokeRPGAPP.Services
 
             await VerificarError(response);
 
-            return await response.Content.ReadFromJsonAsync<List<MensajeResponseDTO>>() ?? [];
+            return await response.Content.ReadFromJsonAsync<ListaMensajesDTO>() ?? new ListaMensajesDTO();
         }
     }
 }

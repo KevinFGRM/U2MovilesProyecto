@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Models.Entities;
 
@@ -44,19 +45,36 @@ namespace U2MovilesProyecto.Services
             mensajesRepository.Insert(mensaje);
         }
 
-        public List<MensajeResponseDTO> ObtenerChat(int idUsuario2)
+        public ListaMensajesDTO ObtenerChat(int idUsuario2)
         {
             int idUsuario1 = ObtenerIdUsuario();
 
-            var mensajes = mensajesRepository.Query()
-                .Where(x =>
-                    (x.Emisor == idUsuario1 && x.Receptor == idUsuario2)
-                    ||
-                    (x.Emisor == idUsuario2 && x.Receptor == idUsuario1))
+            var mensajes = mensajesRepository.Query().Include(x=>x.EmisorNavigation).Include(x=>x.ReceptorNavigation)
+                .Where(x => (x.Emisor == idUsuario1 && x.Receptor == idUsuario2) || (x.Emisor == idUsuario2 && x.Receptor == idUsuario1))
                 .OrderBy(x => x.Fecha)
                 .ToList();
 
-            return mensajes.Select(m => mapper.Map<MensajeResponseDTO>(m)).ToList();
+            var amigo = mensajes.FirstOrDefault(m => m.Emisor == idUsuario2)?.EmisorNavigation?.NombreUsuario
+                        ?? mensajes.FirstOrDefault(m => m.Receptor == idUsuario2)?.ReceptorNavigation?.NombreUsuario;
+
+            // mapear a un dto individualmente para poder asignar la propiedad EsEmisor
+            var listaMensajes = mensajes.Select(m =>
+            { 
+                var dto = mapper.Map<MensajeResponseDTO>(m);
+                dto.EsEmisor = m.Emisor == idUsuario1; 
+                
+                return dto;
+            }).ToList();
+
+            var response = new ListaMensajesDTO
+            {
+                NombreAmigo = amigo ?? "",
+                Mensajes = listaMensajes
+            };
+
+            return response;
+
+            //return mensajes.Select(m => mapper.Map<MensajeResponseDTO>(m)).ToList();
         }
     }
 }

@@ -16,4 +16,11 @@
         public string? Estado { get; set; }
         public string NombreUsuario { get; set; } = null!;
     }
+    public class UsuarioResponseDTO
+    {
+        public int IdUsuario { get; set; }
+        public string NombreUsuario { get; set; } = null!;
+        public string EstadoAmistad { get; set; } = null!;
+        public bool SoyEmisor { get; set; }
+    }
 }

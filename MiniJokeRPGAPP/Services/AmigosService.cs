@@ -29,5 +29,39 @@ namespace MiniJokeRPGAPP.Services
 
             return response.IsSuccessStatusCode;
         }
+        public async Task<bool> AceptarAmigo(AceptarAmigoDTO dto)
+        {
+            await SetToken();
+
+            var response = await client.PostAsJsonAsync(
+                "api/amigos/aceptar",
+                dto);
+
+            await VerificarError(response);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<UsuarioResponseDTO>> GetUsuarios()
+        {
+            await SetToken();
+
+            var response = await client.GetAsync("api/amigos/allusuarios");
+
+            await VerificarError(response);
+
+            return await response.Content.ReadFromJsonAsync<List<UsuarioResponseDTO>>() ?? [];
+        }
+
+        public async Task<List<UsuarioResponseDTO>> GetPendientes()
+        {
+            await SetToken();
+
+            var response = await client.GetAsync("api/amigos/pendientes");
+
+            await VerificarError(response);
+
+            return await response.Content.ReadFromJsonAsync<List<UsuarioResponseDTO>>() ?? [];
+        }
     }
 }

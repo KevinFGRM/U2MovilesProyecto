@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Models.Entities;
 
@@ -113,17 +114,25 @@ namespace U2MovilesProyecto.Services
         {
             int usuario = ObtenerUsuario();
 
-            var partidas = partidasRepository.Query()
+            var partidas = partidasRepository.Query().Include(x => x.Jugador1Navigation).Include(x => x.Jugador2Navigation)
                 .Where(x => x.Jugador1 == usuario || x.Jugador2 == usuario).OrderByDescending(x => x.FechaInicio).ToList();
 
-            return partidas.Select(p => mapper.Map<PartidaResponseDTO>(p)).ToList();
+            var response = partidas.Select(p =>
+            {
+                var dto = mapper.Map<PartidaResponseDTO>(p);
+                dto.Jugador1 = p.Jugador1 == usuario ? "Tú" : p.Jugador1Navigation.NombreUsuario;
+                dto.Jugador2 = p.Jugador2 == usuario ? "Tú" : p.Jugador2Navigation.NombreUsuario;
+                return dto;
+            }).ToList();
+
+            return response;
         }
 
         public PartidaResponseDTO EntrarAPartida(int idPartida)
         {
             int usuario = ObtenerUsuario();
 
-            var partida = partidasRepository.Get(idPartida);
+            var partida = partidasRepository.Query().Include(x=>x.Partidapersonajes).FirstOrDefault(x => x.IdPartida == idPartida);
 
             if (partida == null)
                 throw new Exception("Partida no encontrada.");
@@ -132,7 +141,11 @@ namespace U2MovilesProyecto.Services
             //if (!pertenece)
             //    throw new Exception("No perteneces.");
 
-            return mapper.Map<PartidaResponseDTO>(partida);
+            var dto = mapper.Map<PartidaResponseDTO>(partida);
+            dto.JugadorActualEligio = partida.Partidapersonajes.AsQueryable().Any(p => p.IdPartida == idPartida && p.IdUsuario == usuario && p.IdPersonaje != 0);
+            dto.OponenteEligio = partida.Partidapersonajes.AsQueryable().Any(p => p.IdPartida == idPartida && p.IdUsuario != usuario && p.IdPersonaje != 0);
+
+            return dto;
         }
 
         // iniciar la partida cunado los 2 personajes esten elegidos
@@ -268,6 +281,33 @@ namespace U2MovilesProyecto.Services
                 .ToList();
 
             return habilidades.Select(h=> mapper.Map<HabilidadResponseDto>(h)).ToList();
+        }
+
+        public EstadoPartidaDto ObtenerEstado(int idPartida)
+        {
+            var partida = partidasRepository.Get(idPartida);
+            if(partida == null)
+                throw new Exception("Partida no encontrada.");
+
+            var jugadores = partidaPersonajesRepository.Query()
+                .Where(x => x.IdPartida == idPartida)
+                .ToList();
+
+            var jugador1 = jugadores.First(x => x.IdUsuario == partida.Jugador1);
+            var jugador2 = jugadores.First(x => x.IdUsuario == partida.Jugador2);
+
+            return new EstadoPartidaDto
+            {
+                VidaJugador = jugador1.VidaActual,
+                ManaJugador = jugador1.ManaActual,
+
+                VidaEnemigo = jugador2.VidaActual,
+                ManaEnemigo = jugador2.ManaActual,
+
+                TurnoActual = partida.TurnoActual,
+                IdUsuarioTurno = partida.TurnoActual,
+                Estado = partida.Estado
+            };
         }
     }
 }

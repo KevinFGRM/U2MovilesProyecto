@@ -20,11 +20,13 @@
     public class PartidaResponseDTO
     {
         public int IdPartida { get; set; }
-        public int Jugador1 { get; set; } // usuario
-        public int Jugador2 { get; set; } // usuario
+        public string? Jugador1 { get; set; } // usuario
+        public string? Jugador2 { get; set; } // usuario
         public int TurnoActual { get; set; }
         public string Estado { get; set; } = null!;
         public DateTime? FechaInicio { get; set; }
+        public bool JugadorActualEligio { get; set; } 
+        public bool OponenteEligio { get; set; }
     }
 
     public class AccionResponseDTO
@@ -55,5 +57,16 @@
         public int CostoMana { get; set; }
         public int Dano { get; set; }
         public int Curacion { get; set; }
+    }
+
+    public class EstadoPartidaDto
+    {
+        public int VidaJugador { get; set; }
+        public int VidaEnemigo { get; set; }
+        public int ManaJugador { get; set; }
+        public int ManaEnemigo { get; set; }
+        public int TurnoActual { get; set; }
+        public int IdUsuarioTurno { get; set; }
+        public string Estado { get; set; } = "";
     }
 }

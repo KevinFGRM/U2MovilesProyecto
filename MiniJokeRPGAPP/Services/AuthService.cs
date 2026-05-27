@@ -41,10 +41,9 @@ namespace MiniJokeRPGAPP.Services
             return response.IsSuccessStatusCode;
         }
 
-        public void Logout()
+        public void LogOut()
         {
             SecureStorage.Remove("Token");
-
             client.DefaultRequestHeaders.Authorization = null;
         }
     }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiniJokeRPGAPP.Views.TabsJuego.JuegoView">
+    <VerticalStackLayout Padding="10">
+
+        <!-- ESTADO -->
+        <Label Text="COMBATE" FontSize="24" HorizontalOptions="Center"/>
+
+        <Grid ColumnDefinitions="*,*">
+
+            <VerticalStackLayout>
+                <Label Text="Jugador" />
+                <ProgressBar Progress="{Binding VidaJugador}" />
+                <Label Text="{Binding ManaJugador}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Label Text="Enemigo" />
+                <ProgressBar Progress="{Binding VidaEnemigo}" />
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- TURNO -->
+        <Label Text="{Binding EstadoPartida}" FontAttributes="Bold"/>
+        <Label Text="{Binding EsMiTurno, StringFormat='Turno: {0}'}"/>
+
+        <!-- ACCIONES -->
+        <CollectionView ItemsSource="{Binding Acciones}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Descripcion}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- HABILIDADES -->
+        <CollectionView ItemsSource="{Binding Habilidades}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Button
+                    Text="{Binding Nombre}"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=UsarHabilidadCommand}"
+                    CommandParameter="{Binding}"
+                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=EsMiTurno}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentView>

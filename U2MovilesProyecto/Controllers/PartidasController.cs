@@ -125,5 +125,11 @@ namespace U2MovilesProyecto.Controllers
         {
             return Ok(service.CargarHabilidades(id));
         }
+
+        [HttpGet("{idPartida}/estado")]
+        public ActionResult<EstadoPartidaDto> ObtenerEstado(int idPartida)
+        {
+            return Ok(service.ObtenerEstado(idPartida));
+        }
     }
 }

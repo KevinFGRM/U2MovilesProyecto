@@ -26,6 +26,8 @@ namespace MiniJokeRPGAPP.ViewModels
         [ObservableProperty]
         int idUsuario;
 
+        [ObservableProperty]
+        string nombreAmigo = "";
         public MensajesViewModel(MensajesService mensajesService)
         {
             this.mensajesService = mensajesService;
@@ -37,11 +39,11 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 Mensajes.Clear();
-
                 var lista =
                     await mensajesService.ObtenerChat(IdUsuario);
+                NombreAmigo = lista.NombreAmigo;
 
-                foreach (var item in lista)
+                foreach (var item in lista.Mensajes)
                 {
                     Mensajes.Add(item);
                 }

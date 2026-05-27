@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiniJokeRPGAPP.Views.TabsViews.PartidasView"
+             BackgroundColor="#121212">
+    <Grid RowDefinitions="Auto, *">
+
+        <Label Text="PARTIDAS DISPONIBLES" 
+               TextColor="DarkRed" 
+               FontSize="14" 
+               FontAttributes="Bold" 
+               CharacterSpacing="2"
+               Margin="20,15,20,5"/>
+
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding Partidas}" 
+                        RemainingItemsThreshold="2"
+                        Margin="10,0">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="#1E1E24"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            Margin="5,2">
+
+                        <Grid Padding="16" 
+                              RowDefinitions="Auto, Auto, Auto" 
+                              ColumnDefinitions="*, Auto">
+
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Spacing="4" VerticalOptions="Center">
+
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Jugador1}"
+                                           FontSize="16"
+                                           TextColor="#E0E0E0"
+                                           FontAttributes="Bold"/>
+
+                                    <Label Text="vs"
+                                           FontSize="14"
+                                           TextColor="DarkRed"
+                                           FontAttributes="Italic"
+                                           VerticalOptions="Center"/>
+
+                                    <Label Text="{Binding Jugador2}"
+                                           FontSize="16"
+                                           TextColor="#E0E0E0"
+                                           FontAttributes="Bold"/>
+                                </HorizontalStackLayout>
+
+                                <Label Text="{Binding FechaInicio, StringFormat='Iniciada: {0:g}'}"
+                                       FontSize="12"
+                                       TextColor="#888888"/>
+                            </VerticalStackLayout>
+
+                            <Border Margin="0,0,0,20" Grid.Row="0" Grid.Column="1" 
+                                    BackgroundColor="#2D1B24" 
+                                    StrokeShape="RoundRectangle 6" 
+                                    Padding="8,4" 
+                                    HorizontalOptions="End" 
+                                    VerticalOptions="Start">
+                                <Label Text="{Binding Estado}"
+                                       FontSize="11"
+                                       TextColor="Tomato"
+                                       FontAttributes="Bold"/>
+                            </Border>
+
+                            <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                     HeightRequest="1" 
+                                     BackgroundColor="#2B2B36" 
+                                     Margin="0,12,0,4"/>
+
+                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Text="ENTRAR AL COMBATE"
+                                    FontSize="13"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    BackgroundColor="Indigo"
+                                    CornerRadius="8"
+                                    HeightRequest="40"
+                                    Margin="0,4,0,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EntrarAPartidaCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
+</ContentView>

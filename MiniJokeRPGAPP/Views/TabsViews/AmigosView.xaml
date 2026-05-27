@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiniJokeRPGAPP.Views.TabsViews.AmigosView">
+    <VerticalStackLayout>
+        
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Margin="0,15">
+            <Button Text="Todos" Command="{Binding CargarUsuariosCommand}"></Button>
+            <Button Text="Pendientes" Command="{Binding CargarPendientesCommand}"></Button>
+            <Button Text="Amigos" Command="{Binding CargarAmigosCommand}"></Button>
+        </HorizontalStackLayout>
+        
+        <Label Text="{Binding MensajeError}" TextColor="Red" HorizontalOptions="Center" Margin="0,0,0,10"></Label>
+        
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"></ActivityIndicator>
+        
+        <CollectionView ItemsSource="{Binding Usuarios}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    
+                    <VerticalStackLayout Margin="10,5" Padding="15" BackgroundColor="#2B2B2B" Spacing="10">
+                        
+                        <Label Text="{Binding NombreUsuario}" FontSize="22" FontAttributes="Bold" TextColor="White"></Label>
+                        <Button Text="Agregar amigo" IsVisible="{Binding EsNinguno}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AgregarAmigoCommand}" 
+                                CommandParameter="{Binding .}"></Button>
+                        
+                        <HorizontalStackLayout Spacing="10" IsVisible="False">
+                            
+                            <HorizontalStackLayout.Triggers>
+                                <MultiTrigger TargetType="HorizontalStackLayout">
+                                    <MultiTrigger.Conditions>
+                                        <BindingCondition Binding="{Binding EsPendiente}" Value="True"></BindingCondition>
+                                        <BindingCondition Binding="{Binding SoyEmisor}" Value="False"></BindingCondition>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </MultiTrigger>
+                            </HorizontalStackLayout.Triggers>
+                            
+                            <Button Text="Aceptar" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AceptarAmigoCommand}" 
+                                    CommandParameter="{Binding .}"></Button>
+                        </HorizontalStackLayout>
+                        
+                        <HorizontalStackLayout Spacing="10" IsVisible="{Binding SoyEmisor}">
+                            <Label Text="No ha aceptado la solicitud"></Label>
+                        </HorizontalStackLayout>
+                        
+                        <HorizontalStackLayout Spacing="10" IsVisible="{Binding EsAmigo}">
+                            <Button Text="Chat" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AbrirChatCommand}" 
+                                    CommandParameter="{Binding .}"></Button>
+                            <Button Text="Partida" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.CrearPartidaCommand}" 
+                                    CommandParameter="{Binding .}"></Button>
+                        </HorizontalStackLayout>
+                        
+                    </VerticalStackLayout>
+                    
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentView>

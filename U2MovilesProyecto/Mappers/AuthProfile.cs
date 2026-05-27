@@ -16,8 +16,15 @@ namespace U2MovilesProyecto.Mappers
             .ForMember(dest => dest.Token, opt => opt.Ignore());
 
             CreateMap<Usuarios, AmigoResponseDTO>();
+            CreateMap<Usuarios, UsuarioResponseDTO>();
+            CreateMap<Mensajes, MensajeResponseDTO>()
+                .ForMember(
+                    dest => dest.Contenido,
+                    opt => opt.MapFrom(src => src.Mensaje))
+                .ForMember(
+                    dest => dest.FechaEnvio,
+                    opt => opt.MapFrom(src => src.Fecha));
 
-            CreateMap<Mensajes, MensajeResponseDTO>();
 
         }
     }

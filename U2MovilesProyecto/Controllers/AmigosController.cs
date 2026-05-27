@@ -13,24 +13,15 @@ namespace U2MovilesProyecto.Controllers
     public class AmigosController : ControllerBase
     {
         private readonly AmigosService service;
-        private readonly IValidator<AgregarAmigoDTO> validator;
 
-        public AmigosController(
-            AmigosService service,
-            IValidator<AgregarAmigoDTO> validator)
+        public AmigosController( AmigosService service)
         {
             this.service = service;
-            this.validator = validator;
         }
 
         [HttpPost]
         public IActionResult Agregar(AgregarAmigoDTO dto)
         {
-            var result = validator.Validate(dto);
-
-            if (!result.IsValid)
-                return BadRequest(result.Errors);
-
             try
             {
                 service.AgregarAmigo(dto);
@@ -41,6 +32,7 @@ namespace U2MovilesProyecto.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("aceptar")]
         public IActionResult Aceptar(AceptarAmigoDTO dto)
         {
@@ -54,10 +46,23 @@ namespace U2MovilesProyecto.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet]
-        public IActionResult GetFriends()
+        public IActionResult GetAmigos()
         {
             return Ok(service.ObtenerAmigos());
+        }
+
+        [HttpGet("allusuarios")]
+        public IActionResult GetUsuarios()
+        {
+            return Ok(service.ObtenerUsuarios());
+        }
+
+        [HttpGet("pendientes")]
+        public IActionResult Pendientes()
+        {
+            return Ok(service.ObtenerPendientes());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Models.Entities;
 
@@ -42,7 +43,7 @@ namespace U2MovilesProyecto.Services
             if (amigo == null)
                 throw new Exception("Usuario no encontrado.");
 
-            // por cualquier cosa ya que esto no seria posible en la interfaz pero por si acaso
+            // por cualquier cosa ya que esto no seria posible en la interfaz
             if (amigo.IdUsuario == idUsuario)
                 throw new Exception("No puedes agregarte a ti mismo.");
 
@@ -56,7 +57,7 @@ namespace U2MovilesProyecto.Services
             {
                 Usuario1 = idUsuario,
                 Usuario2 = amigo.IdUsuario,
-                Estado = "Pendiente",
+                Estado = "pendiente",
                 Fecha = DateTime.Now
             };
 
@@ -71,9 +72,9 @@ namespace U2MovilesProyecto.Services
                     (x.Usuario1 == idAmigo.IdUsuario && x.Usuario2 == idUsuario));
             if (relacion == null)
                 throw new Exception("Relación de amistad no encontrada.");
-            if (relacion.Estado != "Pendiente")
+            if (relacion.Estado != "pendiente")
                 throw new Exception("La relación de amistad no está pendiente.");
-            relacion.Estado = "Aceptada";
+            relacion.Estado = "aceptado";
             amigosRepository.Update(relacion);
         }
         public void RechazarAmigo(AceptarAmigoDTO idAmigo)
@@ -85,9 +86,9 @@ namespace U2MovilesProyecto.Services
                     (x.Usuario1 == idAmigo.IdUsuario && x.Usuario2 == idUsuario));
             if (relacion == null)
                 throw new Exception("Relación de amistad no encontrada.");
-            if (relacion.Estado != "Pendiente")
+            if (relacion.Estado != "pendiente")
                 throw new Exception("La relación de amistad no está pendiente.");
-            relacion.Estado = "Rechazada";
+            relacion.Estado = "rechazado";
             amigosRepository.Update(relacion);
         }
 
@@ -96,16 +97,14 @@ namespace U2MovilesProyecto.Services
             int idUsuario = ObtenerIdUsuario();
 
             var amigos = amigosRepository.Query()
-                .Where(x => x.Usuario1 == idUsuario || x.Usuario2 == idUsuario)
+                .Where(x => (x.Usuario1 == idUsuario || x.Usuario2 == idUsuario) && x.Estado == "aceptado")
                 .ToList();
 
             List<Usuarios> usuarios = new();
 
             foreach (var amigo in amigos)
             {
-                int idAmigo = amigo.Usuario1 == idUsuario
-                    ? amigo.Usuario2
-                    : amigo.Usuario1;
+                int idAmigo = amigo.Usuario1 == idUsuario ? amigo.Usuario2 : amigo.Usuario1;
 
                 var usuario = usuariosRepository.Get(idAmigo);
 
@@ -114,6 +113,75 @@ namespace U2MovilesProyecto.Services
             }
 
             return usuarios.Select(u => mapper.Map<AmigoResponseDTO>(u)).ToList();
+        }
+        public List<UsuarioResponseDTO> ObtenerUsuarios()
+        {
+            int usuario = ObtenerIdUsuario();
+
+
+            var usuarios = usuariosRepository.Query()
+                .Where(x => x.IdUsuario != usuario)
+                .ToList();
+
+            List<UsuarioResponseDTO> lista = new();
+
+            foreach (var item in usuarios)
+            {
+                // aqui me empece a arrepentir de no haber planeado propiedades en las entidades y/o dtos 
+                // pero bueno se logro.
+                var siEspendientePeroSoyElQueMandoSolicitud = amigosRepository.Query().Any(a => (a.Usuario2 == item.IdUsuario && a.Estado == "pendiente"
+                && ((a.Usuario1 == usuario && a.Usuario2 == item.IdUsuario)
+                            || (a.Usuario1 == item.IdUsuario && a.Usuario2 == usuario))));
+
+                var relacion = amigosRepository.Query().FirstOrDefault(x => ( (x.Usuario1 == usuario && x.Usuario2 == item.IdUsuario)
+                            || (x.Usuario1 == item.IdUsuario && x.Usuario2 == usuario)));
+
+                string estado = "ninguno";
+
+                if (relacion != null)
+                {
+                    estado = relacion.Estado;
+                }
+
+                lista.Add(new UsuarioResponseDTO
+                {
+                    IdUsuario = item.IdUsuario,
+                    NombreUsuario = item.NombreUsuario,
+                    EstadoAmistad = estado,
+                    SoyEmisor = siEspendientePeroSoyElQueMandoSolicitud
+                    
+                });
+            }
+
+            return lista;
+        }
+
+        public List<UsuarioResponseDTO> ObtenerPendientes()
+        {
+            int usuario = ObtenerIdUsuario();
+
+            var pendientes = amigosRepository.Query()
+                .Where(x => x.Usuario2 == usuario && x.Estado == "pendiente")
+                .ToList();
+
+            List<UsuarioResponseDTO> lista = new();
+
+            foreach (var item in pendientes)
+            {
+                var usuarioPendiente = usuariosRepository.Get(item.Usuario1);
+
+                if (usuarioPendiente != null)
+                {
+                    lista.Add(new UsuarioResponseDTO
+                    {
+                        IdUsuario = usuarioPendiente.IdUsuario,
+                        NombreUsuario = usuarioPendiente.NombreUsuario,
+                        EstadoAmistad = "pendiente"
+                    });
+                }
+            }
+
+            return lista;
         }
     }
 }

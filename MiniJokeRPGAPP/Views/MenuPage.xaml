@@ -2,11 +2,85 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.MenuPage"
-             Title="MenuPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:views="clr-namespace:MiniJokeRPGAPP.Views.TabsViews"
+             xmlns:juego="clr-namespace:MiniJokeRPGAPP.Views.TabsJuego"
+             xmlns:viewmodels="clr-namespace:MiniJokeRPGAPP.ViewModels"
+             Title="MenuPage"
+             x:DataType="viewmodels:MenuViewModel">
+    <Grid RowDefinitions="*,80">
+    
+        <Grid>
+            <views:PresentacionView IsVisible="False">
+                <views:PresentacionView.Triggers>
+                    <DataTrigger TargetType="views:PresentacionView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Presentacion">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </views:PresentacionView.Triggers>
+            </views:PresentacionView>
+            <views:PartidasView BindingContext="{Binding PartidasVM}" IsVisible="False">
+                <views:PartidasView.Triggers>
+                    <DataTrigger TargetType="views:PartidasView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Partidas">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </views:PartidasView.Triggers>
+            </views:PartidasView>
+            <views:AmigosView BindingContext="{Binding AmigosVM}" IsVisible="False">
+                <views:AmigosView.Triggers>
+                    <DataTrigger TargetType="views:AmigosView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Amigos">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </views:AmigosView.Triggers>
+            </views:AmigosView>
+
+            <views:PerfilView BindingContext="{Binding AuthVM}" IsVisible="False">
+                <views:PerfilView.Triggers>
+                    <DataTrigger TargetType="views:PerfilView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Perfil">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </views:PerfilView.Triggers>
+            </views:PerfilView>
+
+            <views:ChatView BindingContext="{Binding MensajesVM}" IsVisible="False">
+                <views:ChatView.Triggers>
+                    <DataTrigger TargetType="views:ChatView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Chat">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </views:ChatView.Triggers>
+            </views:ChatView>
+            <juego:PersonajesView BindingContext="{Binding PartidasVM}" IsVisible="False">
+                <juego:PersonajesView.Triggers>
+                    <DataTrigger TargetType="juego:PersonajesView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Personajes">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </juego:PersonajesView.Triggers>
+            </juego:PersonajesView>
+            <juego:JuegoView BindingContext="{Binding PartidasVM}" IsVisible="False">
+                <juego:JuegoView.Triggers>
+                    <DataTrigger TargetType="juego:JuegoView" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.VistaActual}" Value="Juego">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </juego:JuegoView.Triggers>
+            </juego:JuegoView>
+        </Grid>
+        
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" BackgroundColor="#1E1E1E" Padding="10">
+
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                <Button Text="🏠" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Partidas"></Button>
+                <Label Text="Partidas" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                <Button Text="👥" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Amigos"></Button>
+                <Label Text="Amigos" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                <Button Text="⚙" FontSize="28" Command="{Binding CambiarVistaCommand}" CommandParameter="Perfil"></Button>
+                <Label Text="Perfil" FontSize="12" HorizontalOptions="Center" TextColor="Black"></Label>
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
 </ContentPage>

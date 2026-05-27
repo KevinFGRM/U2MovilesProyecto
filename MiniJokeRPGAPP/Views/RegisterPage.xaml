@@ -3,10 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.RegisterPage"
              Title="RegisterPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+
+    <VerticalStackLayout VerticalOptions="Center">
+        <Label Text="Registro" FontSize="30" HorizontalOptions="Center"/>
+        <Entry Placeholder="Nombre de usuario" Text="{Binding NombreUsuario}" />
+
+        <Entry Placeholder="Correo" Text="{Binding Correo}" />
+        <Entry Placeholder="Contraseña" IsPassword="True" Text="{Binding Contrasena}" />
+
+        <Grid ColumnDefinitions="*, auto" Margin="10, 10, 10, 0" >
+            <Label FontFamily="Verdana" TextColor="Black" Text="¿Ya estas registrado?" VerticalOptions="Center"></Label>
+            <Button FontFamily="Verdana" Grid.Column="1" Text="Iniciar Sesión" TextColor="#344e41" Padding="0,0,5,0" Command="{Binding IrLoginCommand}"
+                    BackgroundColor="Transparent" VerticalOptions="Center"></Button>
+        </Grid>
+        <Label Margin="10, 10, 10, 0" FontFamily="Verdana" TextColor="Red" Text="{Binding MensajeError}"></Label>
+        <Button Text="Registrarse" Command="{Binding RegisterCommand}" />
     </VerticalStackLayout>
 </ContentPage>

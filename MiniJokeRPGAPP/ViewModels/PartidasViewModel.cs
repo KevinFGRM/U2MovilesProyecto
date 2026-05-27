@@ -32,12 +32,30 @@ namespace MiniJokeRPGAPP.ViewModels
         int idPersonaje;
 
         [ObservableProperty]
-        PersonajeResponseDto? selectedCharacter;
+        int vidaJugador;
+
+        [ObservableProperty]
+        int vidaEnemigo;
+
+        [ObservableProperty]
+        int manaJugador;
+
+        [ObservableProperty]
+        string estadoPartida;
+
+        [ObservableProperty]
+        bool esMiTurno;
+
+        [ObservableProperty]
+        PersonajeResponseDto? personajeSeleccionado;
+
+        public MenuViewModel MenuVM { get; set; } = null!;
 
         public PartidasViewModel(PartidasService partidasService, PersonajesService personajesService)
         {
             this.partidasService = partidasService;
             this.personajesService = personajesService;
+
         }
 
         [RelayCommand]
@@ -69,8 +87,35 @@ namespace MiniJokeRPGAPP.ViewModels
         [RelayCommand]
         public async Task EntrarAPartida(PartidaResponseDTO partida)
         {
-            // Navega a pantalla de batalla
-            //await Shell.Current.GoToAsync($"battle?id={partida.IdPartida}");
+            try
+            {
+                IsBusy = true;
+
+                var response = await partidasService.EntrarPartida(partida.IdPartida);
+                if (response != null)
+                {
+                    if (response.JugadorActualEligio)
+                    {
+                        MenuVM.VistaActual = "Juego";
+                    }
+                    else
+                    {
+                        MenuVM.VistaActual = "Personajes";
+                        IdPartida = partida.IdPartida;
+                        await CargarPersonajes();
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MensajeError = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         [RelayCommand]
@@ -84,6 +129,10 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 foreach (var item in lista)
                 {
+                    IdPersonaje = item.IdPersonaje;
+
+                    var habs = await CargarHabilidades();
+                    item.Habilidades = habs;
                     Personajes.Add(item);
                 }
             }
@@ -94,21 +143,23 @@ namespace MiniJokeRPGAPP.ViewModels
         }
 
         [RelayCommand]
-        public async Task SeleccionarPersonaje()
+        public async Task SeleccionarPersonaje(PersonajeResponseDto personajeSeleccionado)
         {
             try
             {
-                if (SelectedCharacter == null)
+                if (personajeSeleccionado == null)
                     return;
 
                 SeleccionarPersonajeDto dto = new()
                 {
-                    IdPersonaje = SelectedCharacter.IdPersonaje
+                    IdPartida = IdPartida,
+                    IdPersonaje = personajeSeleccionado.IdPersonaje
                 };
 
-                await partidasService.SeleccionarPersonaje(IdPartida, dto);
+                await partidasService.SeleccionarPersonaje(dto);
 
-                await Shell.Current.GoToAsync("//Partida"); // Navega a pantalla de partida
+                //await Shell.Current.GoToAsync("//Partida"); // Navega a pantalla de partida
+
             }
             catch (Exception ex)
             {
@@ -122,7 +173,11 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 await CargarAcciones();
-                await CargarHabilidades();
+                var lista = await CargarHabilidades();
+                foreach (var item in lista)
+                {
+                    Habilidades.Add(item);
+                }
             }
             catch (Exception ex)
             {
@@ -144,16 +199,13 @@ namespace MiniJokeRPGAPP.ViewModels
         }
 
         [RelayCommand]
-        public async Task CargarHabilidades()
+        public async Task<List<HabilidadResponseDto>> CargarHabilidades()
         {
             Habilidades.Clear();
 
             var lista = await personajesService.GetHabilidades(IdPersonaje);
 
-            foreach (var item in lista)
-            {
-                Habilidades.Add(item);
-            }
+            return lista;
         }
 
         [RelayCommand]
@@ -170,11 +222,22 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 // Recargar historial actualizado
                 await CargarAcciones();
+                await CargarEstado();
             }
             catch (Exception ex)
             {
                 MensajeError = ex.Message;
             }
+        }
+        public async Task CargarEstado()
+        {
+            var estado = await partidasService.ObtenerEstado(IdPartida);
+
+            VidaJugador = estado.VidaJugador;
+            VidaEnemigo = estado.VidaEnemigo;
+            ManaJugador = estado.ManaJugador;
+            EstadoPartida = estado.Estado;
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MiniJokeRPGAPP.Models.DTOs;
 using MiniJokeRPGAPP.Services;
+using MiniJokeRPGAPP.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -48,7 +49,7 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 if (response != null)
                 {
-                    await Shell.Current.GoToAsync("//home");
+                    await Shell.Current.GoToAsync("MenuPage");
                 }
             }
             catch (Exception ex)
@@ -59,6 +60,17 @@ namespace MiniJokeRPGAPP.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        [RelayCommand]
+        public async Task IrRegistrar()
+        {
+            await Shell.Current.GoToAsync("RegisterPage");
+        }
+        [RelayCommand]
+        public async Task IrLogin()
+        {
+            await Shell.Current.GoToAsync("///LoginPage");
         }
 
         [RelayCommand]
@@ -77,11 +89,29 @@ namespace MiniJokeRPGAPP.ViewModels
 
                 await authService.Register(dto);
 
-                await Shell.Current.GoToAsync("//login");
+                await Shell.Current.GoToAsync("///LoginPage");
             }
             catch (Exception ex)
             {
-                MensajeError=ex.Message;
+                MensajeError = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        [RelayCommand]
+        public void Logout()
+        {
+            try
+            {
+                IsBusy = true;
+                authService.LogOut();
+                Shell.Current.GoToAsync("///LoginPage");
+            }
+            catch (Exception ex)
+            {
+                MensajeError = ex.Message;
             }
             finally
             {

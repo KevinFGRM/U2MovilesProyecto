@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="MiniJokeRPGAPP.Views.TabsViews.ChatView">
+    
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#1E1E1E">
+        
+        <Border Grid.Row="0" BackgroundColor="#2B2B2B" Padding="15">
+            <Label Text="{Binding NombreAmigo}" FontSize="22" FontAttributes="Bold" TextColor="White"></Label>
+        </Border>
+        
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Mensajes}" Margin="10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        
+                        <Border IsVisible="{Binding NoEsEmisor}" HorizontalOptions="Start" BackgroundColor="#2B2B2B" 
+                                Padding="12" Margin="0,5" MaximumWidthRequest="280">
+                            
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="{Binding Contenido}" TextColor="White"></Label>
+                                <Label Text="{Binding FechaEnvio}" FontSize="10" HorizontalOptions="End" TextColor="#BDBDBD"></Label>
+                            </VerticalStackLayout>
+                            
+                        </Border>
+                        <Border IsVisible="{Binding EsEmisor}" HorizontalOptions="End" BackgroundColor="#4CAF50" 
+                                Padding="12" Margin="0,5" MaximumWidthRequest="280">
+                            
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="{Binding Contenido}" TextColor="White"></Label>
+                                <Label Text="{Binding FechaEnvio}" FontSize="10" HorizontalOptions="End" TextColor="#E8F5E9"></Label>
+                            </VerticalStackLayout>
+                            
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Padding="10" BackgroundColor="#2B2B2B">
+            
+            <Border Grid.Column="0" StrokeThickness="0" BackgroundColor="#3A3A3A" StrokeShape="RoundRectangle 20" Padding="10,0">
+                <Entry Placeholder="Mensaje..." Text="{Binding Mensaje}" TextColor="White" 
+                       PlaceholderColor="#AAAAAA" BackgroundColor="Transparent"></Entry>
+            </Border>
+            
+            <Button Grid.Column="1" Margin="10,0,0,0" Text="➤" FontSize="22" 
+                    WidthRequest="55" HeightRequest="55" CornerRadius="27" Command="{Binding MandarMensajeCommand}"></Button>
+            
+        </Grid>
+    </Grid>
+
+</ContentView>
