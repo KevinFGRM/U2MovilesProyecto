@@ -41,6 +41,17 @@ namespace MiniJokeRPGAPP.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task GuardarFcmToken(string token)
+        {
+            await SetToken();
+
+            var dto = new FcmTokenDTO()
+            {
+                Token = token
+            };
+
+            await client.PostAsJsonAsync("api/auth/fcmtoken", dto);
+        }
         public void LogOut()
         {
             SecureStorage.Remove("Token");

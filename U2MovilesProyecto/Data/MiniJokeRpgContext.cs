@@ -1,15 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using U2MovilesProyecto.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using MiniJokeRPGAPI.Models.Entities;
+using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
-namespace U2MovilesProyecto.Data;
+namespace MiniJokeRPGAPI.Data;
 
-public partial class MiniJokeRpgContext : DbContext
+public partial class MinijokerpgContext : DbContext
 {
-    public MiniJokeRpgContext()
+    public MinijokerpgContext()
     {
     }
 
-    public MiniJokeRpgContext(DbContextOptions<MiniJokeRpgContext> options)
+    public MinijokerpgContext(DbContextOptions<MinijokerpgContext> options)
         : base(options)
     {
     }
@@ -17,6 +20,8 @@ public partial class MiniJokeRpgContext : DbContext
     public virtual DbSet<Accionespartida> Accionespartida { get; set; }
 
     public virtual DbSet<Amigos> Amigos { get; set; }
+
+    public virtual DbSet<Fcmtokens> Fcmtokens { get; set; }
 
     public virtual DbSet<Habilidades> Habilidades { get; set; }
 
@@ -29,8 +34,6 @@ public partial class MiniJokeRpgContext : DbContext
     public virtual DbSet<Personajes> Personajes { get; set; }
 
     public virtual DbSet<Usuarios> Usuarios { get; set; }
-
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -97,6 +100,25 @@ public partial class MiniJokeRpgContext : DbContext
                 .HasForeignKey(d => d.Usuario2)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("amigos_ibfk_2");
+        });
+
+        modelBuilder.Entity<Fcmtokens>(entity =>
+        {
+            entity.HasKey(e => e.IdToken).HasName("PRIMARY");
+
+            entity.ToTable("fcmtokens");
+
+            entity.HasIndex(e => e.IdUsuario, "IdUsuario");
+
+            entity.Property(e => e.Fecha)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Token).HasColumnType("text");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Fcmtokens)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fcmtokens_ibfk_1");
         });
 
         modelBuilder.Entity<Habilidades>(entity =>
@@ -186,8 +208,8 @@ public partial class MiniJokeRpgContext : DbContext
             entity.HasIndex(e => e.Jugador2, "Jugador2");
 
             entity.Property(e => e.Estado)
-                .HasDefaultValueSql("'activa'")
-                .HasColumnType("enum('activa','finalizada')");
+                .HasDefaultValueSql("'esperandopersonajes'")
+                .HasColumnType("enum('esperandopersonajes','activa','finalizada')");
             entity.Property(e => e.FechaInicio)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");

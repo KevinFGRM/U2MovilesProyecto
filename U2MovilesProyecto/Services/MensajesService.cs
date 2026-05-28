@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using MiniJokeRPGAPI.Models.Entities;
 using U2MovilesProyecto.Models.DTOs;
-using U2MovilesProyecto.Models.Entities;
 
 namespace U2MovilesProyecto.Services
 {
@@ -12,17 +12,16 @@ namespace U2MovilesProyecto.Services
         private readonly Repository<Usuarios> usuariosRepository;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IMapper mapper;
+        private readonly NotificacionesService notificacionesService;
 
-        public MensajesService(
-            Repository<Mensajes> mensajesRepository,
-            Repository<Usuarios> usuariosRepository,
-            IHttpContextAccessor httpContextAccessor,
-            IMapper mapper)
+        public MensajesService(Repository<Mensajes> mensajesRepository, Repository<Usuarios> usuariosRepository,
+            IHttpContextAccessor httpContextAccessor, IMapper mapper, NotificacionesService notificacionesService)
         {
             this.mensajesRepository = mensajesRepository;
             this.usuariosRepository = usuariosRepository;
             this.httpContextAccessor = httpContextAccessor;
             this.mapper = mapper;
+            this.notificacionesService = notificacionesService;
         }
 
         private int ObtenerIdUsuario()
@@ -46,6 +45,22 @@ namespace U2MovilesProyecto.Services
             };
 
             mensajesRepository.Insert(mensaje);
+
+
+            notificacionesService.EnviarNotificacion(
+                        dto.IdReceptor,
+                        "Nuevo mensaje",
+                        "Te enviaron un mensaje"
+                    );            //var tokens = context.Fcmtokens
+            //    .Where(x => x.IdUsuario == idReceptor)
+            //    .Select(x => x.Token)
+            //    .ToList();
+
+            //notificacionesService.EnviarNotificaciones(
+            //    tokens,
+            //    "Nuevo mensaje",
+            //    "Te enviaron un mensaje"
+            //);
         }
 
         public ListaMensajesDTO ObtenerChat(int idUsuario2)

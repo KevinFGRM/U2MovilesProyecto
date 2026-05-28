@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiniJokeRPGAPI.Models.DTOs;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Services;
 
@@ -56,6 +58,14 @@ namespace U2MovilesProyecto.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [Authorize]
+        [HttpPost("fcmtoken")]
+        public IActionResult GuardarToken(FcmTokenDTO dto)
+        {
+            service.GuardarToken(dto.Token);
+
+            return Ok();
         }
     }
 }

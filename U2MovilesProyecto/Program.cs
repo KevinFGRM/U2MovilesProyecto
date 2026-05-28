@@ -3,13 +3,13 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MiniJokeRPGAPI.Data;
 using System.Text;
-using U2MovilesProyecto.Data;
 using U2MovilesProyecto.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<MiniJokeRpgContext>(options =>
+builder.Services.AddDbContext<MinijokerpgContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(
@@ -30,7 +30,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AmigosService>();
 builder.Services.AddScoped<MensajesService>();
 builder.Services.AddScoped<PartidasService>();
-
+builder.Services.AddScoped<NotificacionesService>();
 
 
 
@@ -63,4 +63,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseFileServer();
+
 app.Run();

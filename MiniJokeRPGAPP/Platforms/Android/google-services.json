@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319147824063",
+    "project_id": "octavo2026-87db4",
+    "storage_bucket": "octavo2026-87db4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319147824063:android:1e2491bb279c6dcc1cc70a",
+        "android_client_info": {
+          "package_name": "com.itesrc.pruebanotificacion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjVWiDwhylbQd3SDsFWMB-mi-aA68b9pA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

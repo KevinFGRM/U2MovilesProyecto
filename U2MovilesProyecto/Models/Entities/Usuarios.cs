@@ -1,4 +1,7 @@
-﻿namespace U2MovilesProyecto.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MiniJokeRPGAPI.Models.Entities;
 
 public partial class Usuarios
 {
@@ -17,6 +20,8 @@ public partial class Usuarios
     public virtual ICollection<Amigos> AmigosUsuario1Navigation { get; set; } = new List<Amigos>();
 
     public virtual ICollection<Amigos> AmigosUsuario2Navigation { get; set; } = new List<Amigos>();
+
+    public virtual ICollection<Fcmtokens> Fcmtokens { get; set; } = new List<Fcmtokens>();
 
     public virtual ICollection<Mensajes> MensajesEmisorNavigation { get; set; } = new List<Mensajes>();
 
