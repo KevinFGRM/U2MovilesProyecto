@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Services;
@@ -14,7 +12,7 @@ namespace U2MovilesProyecto.Controllers
     {
         private readonly AmigosService service;
 
-        public AmigosController( AmigosService service)
+        public AmigosController(AmigosService service)
         {
             this.service = service;
         }

@@ -52,7 +52,7 @@ namespace U2MovilesProyecto.Services
         {
             int idUsuario1 = ObtenerIdUsuario();
 
-            var mensajes = mensajesRepository.Query().Include(x=>x.EmisorNavigation).Include(x=>x.ReceptorNavigation)
+            var mensajes = mensajesRepository.Query().Include(x => x.EmisorNavigation).Include(x => x.ReceptorNavigation)
                 .Where(x => (x.Emisor == idUsuario1 && x.Receptor == idUsuario2) || (x.Emisor == idUsuario2 && x.Receptor == idUsuario1))
                 .OrderBy(x => x.Fecha)
                 .ToList();
@@ -62,10 +62,10 @@ namespace U2MovilesProyecto.Services
 
             // mapear a un dto individualmente para poder asignar la propiedad EsEmisor
             var listaMensajes = mensajes.Select(m =>
-            { 
+            {
                 var dto = mapper.Map<MensajeResponseDTO>(m);
-                dto.EsEmisor = m.Emisor == idUsuario1; 
-                
+                dto.EsEmisor = m.Emisor == idUsuario1;
+
                 return dto;
             }).ToList();
 

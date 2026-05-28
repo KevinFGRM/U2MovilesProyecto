@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Services;
@@ -81,7 +80,12 @@ namespace U2MovilesProyecto.Controllers
         {
             try
             {
-                return Ok(service.EntrarAPartida(id));
+                var dto = service.EntrarAPartida(id);
+                if(dto != null)
+                {
+                    return Ok(dto);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -127,7 +131,7 @@ namespace U2MovilesProyecto.Controllers
         }
 
         [HttpGet("{idPartida}/estado")]
-        public ActionResult<EstadoPartidaDto> ObtenerEstado(int idPartida)
+        public IActionResult ObtenerEstado(int idPartida)
         {
             return Ok(service.ObtenerEstado(idPartida));
         }

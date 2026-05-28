@@ -1,5 +1,4 @@
 ﻿using U2MovilesProyecto.Data;
-using U2MovilesProyecto.Models.Entities;
 
 namespace AvisosAPI.Repositories
 {

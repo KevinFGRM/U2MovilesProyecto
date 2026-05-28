@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
-using Microsoft.EntityFrameworkCore;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Models.Entities;
 
@@ -127,13 +126,15 @@ namespace U2MovilesProyecto.Services
 
             foreach (var item in usuarios)
             {
+                // despues de lo que hice en partidas ya no me parece tan complicado
+
                 // aqui me empece a arrepentir de no haber planeado propiedades en las entidades y/o dtos 
                 // pero bueno se logro.
                 var siEspendientePeroSoyElQueMandoSolicitud = amigosRepository.Query().Any(a => (a.Usuario2 == item.IdUsuario && a.Estado == "pendiente"
                 && ((a.Usuario1 == usuario && a.Usuario2 == item.IdUsuario)
                             || (a.Usuario1 == item.IdUsuario && a.Usuario2 == usuario))));
 
-                var relacion = amigosRepository.Query().FirstOrDefault(x => ( (x.Usuario1 == usuario && x.Usuario2 == item.IdUsuario)
+                var relacion = amigosRepository.Query().FirstOrDefault(x => ((x.Usuario1 == usuario && x.Usuario2 == item.IdUsuario)
                             || (x.Usuario1 == item.IdUsuario && x.Usuario2 == usuario)));
 
                 string estado = "ninguno";
@@ -149,7 +150,7 @@ namespace U2MovilesProyecto.Services
                     NombreUsuario = item.NombreUsuario,
                     EstadoAmistad = estado,
                     SoyEmisor = siEspendientePeroSoyElQueMandoSolicitud
-                    
+
                 });
             }
 

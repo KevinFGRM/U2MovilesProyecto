@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace U2MovilesProyecto.Models.Entities;
+﻿namespace U2MovilesProyecto.Models.Entities;
 
 public partial class Partidapersonajes
 {

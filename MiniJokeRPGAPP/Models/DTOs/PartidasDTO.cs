@@ -72,13 +72,14 @@
         public int ManaEnemigo2 { get; set; }
         public bool MiTurno { get; set; }
         public string Estado { get; set; } = "";
+        public string? Ganador { get; set; }
         public List<HabilidadResponseDto> HabilidadesJugador1 { get; set; } = new List<HabilidadResponseDto>();
     }
 
     public class EntrarPartidaResult
     {
-        public PartidaResponseDTO? Pendiente { get; set; }
-        public EstadoPartidaDto? Partida { get; set; }
+        public PartidaResponseDTO Pendiente { get; set; } = new();
+        public EstadoPartidaDto Partida { get; set; } = new();
     }
 
 }

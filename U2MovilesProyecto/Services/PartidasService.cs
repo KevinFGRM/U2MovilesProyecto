@@ -81,12 +81,7 @@ namespace U2MovilesProyecto.Services
             if (partida == null)
                 throw new Exception("Partida no encontrada.");
 
-            //bool pertenece = partida.Jugador1 == usuario || partida.Jugador2 == usuario;
-            //if (!pertenece)
-            //    throw new Exception("No perteneces a esta partida.");
-
-            bool yaSelecciono =
-                partidaPersonajesRepository.Query().Any(x => x.IdPartida == dto.IdPartida && x.IdUsuario == usuario);
+            bool yaSelecciono = partidaPersonajesRepository.Query().Any(x => x.IdPartida == dto.IdPartida && x.IdUsuario == usuario);
 
             if (yaSelecciono)
                 throw new Exception("Ya seleccionaste personaje.");
@@ -128,50 +123,19 @@ namespace U2MovilesProyecto.Services
             return response;
         }
 
-        public EntrarPartidaResult EntrarAPartida(int idPartida)
+        public PartidaResponseDTO EntrarAPartida(int idPartida)
         {
             int usuario = ObtenerUsuario();
 
-            var partida = partidasRepository.Query().Include(x => x.Partidapersonajes).FirstOrDefault(x => x.IdPartida == idPartida);
+            var partida = partidasRepository.Query().Include(x => x.Partidapersonajes).Include(x => x.Jugador1Navigation).Include(x => x.Jugador2Navigation).FirstOrDefault(x => x.IdPartida == idPartida);
 
             if (partida == null)
                 throw new Exception("Partida no encontrada.");
 
-            //bool pertenece = partida.Jugador1 == usuario || partida.Jugador2 == usuario;
-            //if (!pertenece)
-            //    throw new Exception("No perteneces.");
-
             var dto = mapper.Map<PartidaResponseDTO>(partida);
             dto.JugadorActualEligio = partida.Partidapersonajes.AsQueryable().Any(p => p.IdPartida == idPartida && p.IdUsuario == usuario && p.IdPersonaje != 0);
             dto.OponenteEligio = partida.Partidapersonajes.AsQueryable().Any(p => p.IdPartida == idPartida && p.IdUsuario != usuario && p.IdPersonaje != 0);
-
-            if (dto.OponenteEligio && dto.JugadorActualEligio && partida.Estado == "esperandopersonajes")
-            {
-                partida.Estado = "activa";
-                partidasRepository.Update(partida);
-                var estado = new EstadoPartidaDto
-                {
-                    Jugador1 = partida.Jugador1 == usuario ? $"{partida.Jugador1Navigation.NombreUsuario} (Tú)" : partida.Jugador1Navigation.NombreUsuario,
-                    Jugador2 = partida.Jugador2 == usuario ? $"{partida.Jugador2Navigation.NombreUsuario} (Tú)" : partida.Jugador2Navigation.NombreUsuario,
-
-                    Personaje1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).IdPersonaje,
-                    Personaje2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).IdPersonaje,
-
-                    VidaJugador1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).VidaActual,
-                    ManaJugador1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).ManaActual,
-
-                    VidaEnemigo2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).VidaActual,
-                    ManaEnemigo2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).ManaActual,
-
-                    MiTurno = partida.TurnoActual == usuario,
-                    Estado = partida.Estado,
-
-                    HabilidadesJugador1 = mapper.Map<List<HabilidadResponseDto>>(habilidadesRepository.Query().Where(h => h.IdPersonaje == partida.Partidapersonajes.First(x => x.IdUsuario == usuario).IdPersonaje).ToList())
-                };
-                return new EntrarPartidaResult { Pendiente = null, Partida = estado };
-            }
-
-            return new EntrarPartidaResult { Pendiente = dto, Partida = null };
+            return dto;
         }
 
         // iniciar la partida cunado los 2 personajes esten elegidos
@@ -182,9 +146,7 @@ namespace U2MovilesProyecto.Services
             if (partida == null)
                 return;
 
-            int cantidad =
-                partidaPersonajesRepository.Query()
-                .Count(x => x.IdPartida == idPartida);
+            int cantidad = partidaPersonajesRepository.Query().Count(x => x.IdPartida == idPartida);
 
             if (cantidad >= 2)
             {
@@ -253,7 +215,7 @@ namespace U2MovilesProyecto.Services
                 Usuario = usuario,
                 Habilidad = habilidad.IdHabilidad,
                 Descripcion =
-                    $"Usó {habilidad.Nombre} e hizo {habilidad.Dano} daño.",
+                    $"Uso {habilidad.Nombre} e hizo {habilidad.Dano} daño.",
                 Fecha = DateTime.Now
             };
 
@@ -313,27 +275,57 @@ namespace U2MovilesProyecto.Services
         {
             int usuario = ObtenerUsuario();
 
-            var partida = partidasRepository.Get(idPartida);
+            // quien me manda a mi a hacer un juego, que pesadilla.
+            var partida = partidasRepository.Query().Include(x => x.Partidapersonajes).Include(x => x.Jugador1Navigation)
+                .Include(x => x.Jugador2Navigation).FirstOrDefault(x => x.IdPartida == idPartida);
+
             if (partida == null)
                 throw new Exception("Partida no encontrada.");
 
+            if (partida.Estado == "esperandopersonajes")
+            {
+                partida.Estado = "activa";
+                partidasRepository.Update(partida);
+            }
+
+            bool esJugador1 = partida.Jugador1 == usuario;
+            bool esJugador2 = partida.Jugador2 == usuario;
+
+            var miPersonaje = partida.Partidapersonajes.First(x => x.IdUsuario == usuario);
+            var oponentePersonaje = partida.Partidapersonajes.First(x => x.IdUsuario != usuario);
+
+            string nombreJugador1 = partida.Jugador1Navigation.NombreUsuario;
+            string nombreJugador2 = partida.Jugador2Navigation.NombreUsuario;
+
+            if (esJugador1)
+                nombreJugador1 = $"{nombreJugador1} (Tú)";
+            else if (esJugador2)
+                nombreJugador2 = $"{nombreJugador2} (Tú)";
+
             var estado = new EstadoPartidaDto
             {
-                Jugador1 = partida.Jugador1 == usuario ? $"{partida.Jugador1Navigation.NombreUsuario} (Tú)" : partida.Jugador1Navigation.NombreUsuario,
-                Jugador2 = partida.Jugador2 == usuario ? $"{partida.Jugador2Navigation.NombreUsuario} (Tú)" : partida.Jugador2Navigation.NombreUsuario,
+                Jugador1 = esJugador1 ? $"{partida.Jugador1Navigation.NombreUsuario} (Tú)" : $"{partida.Jugador2Navigation.NombreUsuario} (Tú)",
+                Jugador2 = esJugador1 ? partida.Jugador2Navigation.NombreUsuario : partida.Jugador1Navigation.NombreUsuario,
 
-                Personaje1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).IdPersonaje,
-                Personaje2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).IdPersonaje,
+                Personaje1 = miPersonaje.IdPersonaje,
+                VidaJugador1 = miPersonaje.VidaActual,
+                ManaJugador1 = miPersonaje.ManaActual,
 
-                VidaJugador1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).VidaActual,
-                ManaJugador1 = partida.Partidapersonajes.First(x => x.IdUsuario == usuario).ManaActual,
-
-                VidaEnemigo2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).VidaActual,
-                ManaEnemigo2 = partida.Partidapersonajes.First(x => x.IdUsuario != usuario).ManaActual,
+                Personaje2 = oponentePersonaje.IdPersonaje,
+                VidaEnemigo2 = oponentePersonaje.VidaActual,
+                ManaEnemigo2 = oponentePersonaje.ManaActual,
 
                 MiTurno = partida.TurnoActual == usuario,
-                Estado = partida.Estado
+                Estado = partida.Estado,
             };
+            if(estado.Estado == "finalizada")
+            {
+                estado.Ganador = partida.Ganador == usuario ? $"{(partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "Tú")} (Tú)" 
+                              : (partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "(Oponente)");
+            }
+            var habs = CargarHabilidades(miPersonaje.IdPersonaje);
+            estado.HabilidadesJugador1 = habs;
+
             return estado;
         }
     }

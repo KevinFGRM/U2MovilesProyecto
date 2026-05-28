@@ -41,22 +41,23 @@ namespace MiniJokeRPGAPP.Services
             return await response.Content.ReadFromJsonAsync<List<PartidaResponseDTO>>() ?? [];
         }
 
-        public async Task<EntrarPartidaResult?> EntrarPartida(int idPartida)
+        public async Task<PartidaResponseDTO?> EntrarPartida(int idPartida)
         {
             await SetToken();
 
             var response = await client.GetAsync($"api/partidas/{idPartida}");
-
-            await VerificarError(response);
-
-            return await response.Content.ReadFromJsonAsync<EntrarPartidaResult>();
+            if(response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PartidaResponseDTO>();
+            }
+            return null;
         }
 
-        public async Task<bool> RealizarAccion( int idPartida, RealizarAccionDto dto)
+        public async Task<bool> RealizarAccion(RealizarAccionDto dto)
         {
             await SetToken();
 
-            var response = await client.PostAsJsonAsync($"api/partidas/{idPartida}/accion", dto);
+            var response = await client.PostAsJsonAsync($"api/partidas/accion", dto);
 
             await VerificarError(response);
 
@@ -80,9 +81,11 @@ namespace MiniJokeRPGAPP.Services
 
             var response = await client.GetAsync($"api/partidas/{idPartida}/estado");
 
-            await VerificarError(response);
-
-            return await response.Content.ReadFromJsonAsync<EstadoPartidaDto>();
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<EstadoPartidaDto>();
+            }
+            return null;
         }
     }
 }

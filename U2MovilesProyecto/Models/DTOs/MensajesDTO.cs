@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace U2MovilesProyecto.Models.DTOs
+﻿namespace U2MovilesProyecto.Models.DTOs
 {
     public class MandarMensajeDTO
     {

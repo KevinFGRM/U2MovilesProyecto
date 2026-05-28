@@ -80,25 +80,25 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 IsBusy = true;
-
                 var response = await partidasService.EntrarPartida(partida.IdPartida);
                 if (response != null)
                 {
-                    if (response.Pendiente != null && response.Pendiente.JugadorActualEligio)
+                    if (response.JugadorActualEligio && !response.OponenteEligio)
                     {
                         // mandar a una vista de espera o algo asi
                         MenuVM.VistaActual = "Juego";
                     }
-                    else if(response.Pendiente != null && !response.Pendiente.JugadorActualEligio)
+                    else if(!response.JugadorActualEligio)
                     {
                         MenuVM.VistaActual = "Personajes";
-                        IdPartida = response.Pendiente.IdPartida;
+                        IdPartida = response.IdPartida;
                         await CargarPersonajes();
                     }
-                    else if(response.Pendiente == null && response.Partida != null)
+                    else if(response.JugadorActualEligio && response.OponenteEligio)
                     {
                         MenuVM.VistaActual = "Juego";
-                        EstadoPartida = response.Partida;
+                        IdPartida = partida.IdPartida;
+                        await CargarEstado();
                     }
 
                 }
@@ -211,13 +211,13 @@ namespace MiniJokeRPGAPP.ViewModels
             {
                 RealizarAccionDto dto = new()
                 {
+                    IdPartida = IdPartida,
                     IdHabilidad = habilidad.IdHabilidad
                 };
 
-                await partidasService.RealizarAccion(IdPartida, dto);
+                await partidasService.RealizarAccion(dto);
 
                 // Recargar historial actualizado
-                await CargarAcciones();
                 await CargarEstado();
             }
             catch (Exception ex)
@@ -228,8 +228,8 @@ namespace MiniJokeRPGAPP.ViewModels
         public async Task CargarEstado()
         {
             var estado = await partidasService.ObtenerEstado(IdPartida);
-
-
+            EstadoPartida = estado;
+            await CargarAcciones();
         }
     }
 }

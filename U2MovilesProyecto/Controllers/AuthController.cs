@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using U2MovilesProyecto.Models.DTOs;
 using U2MovilesProyecto.Services;
-using U2MovilesProyecto.Validators;
 
 namespace U2MovilesProyecto.Controllers
 {

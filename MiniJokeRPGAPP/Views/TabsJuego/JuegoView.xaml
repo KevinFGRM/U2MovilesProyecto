@@ -1,56 +1,166 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MiniJokeRPGAPP.Views.TabsJuego.JuegoView">
-    <VerticalStackLayout Padding="10">
+             x:Class="MiniJokeRPGAPP.Views.TabsJuego.JuegoView"
+             BackgroundColor="#121212">
+    <!-- Fondo oscuro general -->
 
-        <!-- ESTADO -->
-        <Label Text="COMBATE" FontSize="24" HorizontalOptions="Center"/>
+    <Grid RowDefinitions="Auto, *, Auto" Padding="12" RowSpacing="12">
 
-        <Grid ColumnDefinitions="*,*">
+        <!-- ==================== FILA 0: PANEL DE COMBATE ==================== -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
 
-            <VerticalStackLayout>
-                <Label Text="Jugador" />
-                <ProgressBar Progress="{Binding VidaJugador}" />
-                <Label Text="{Binding ManaJugador}" />
+            <Label Text="ARENA DE COMBATE" 
+                   HorizontalOptions="Center" 
+                   TextColor="DarkRed" 
+                   FontAttributes="Bold" 
+                   FontSize="12" 
+                   CharacterSpacing="2"/>
+
+            <!-- CONTENEDOR DE JUGADORES (VERSUS) -->
+            <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="8">
+
+                <!-- JUGADOR 1 (TÚ) -->
+                <Border Grid.Column="0" BackgroundColor="#1E1E24" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="12,10">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{Binding EstadoPartida.Jugador1}" FontAttributes="Bold" TextColor="#E0E0E0" FontSize="14" HorizontalOptions="Center"/>
+
+                        <!-- Barra e indicador de Vida -->
+                        <VerticalStackLayout Spacing="2">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Text="❤️ HP" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Column="1" Text="{Binding EstadoPartida.VidaJugador1}" FontSize="11" TextColor="White" FontAttributes="Bold"/>
+                            </Grid>
+                            <!-- Barra estilizada en color rojo/tomate para la salud -->
+                            <ProgressBar Progress="{Binding EstadoPartida.VidaJugador1}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
+                        </VerticalStackLayout>
+
+                        <!-- Maná -->
+                        <Label Text="{Binding EstadoPartida.ManaJugador1, StringFormat='🔮 {0} PM'}" FontSize="12" TextColor="#90CAF9" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- DIVISOR CENTRAL VS -->
+                <Label Grid.Column="1" Text="VS" 
+                       TextColor="DarkRed" 
+                       FontAttributes="Bold" 
+                       FontSize="16" 
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Center" 
+                       Margin="4,0"/>
+
+                <!-- JUGADOR 2 (ENEMIGO) -->
+                <Border Grid.Column="2" BackgroundColor="#1E1E24" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="12,10">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{Binding EstadoPartida.Jugador2}" FontAttributes="Bold" TextColor="#E0E0E0" FontSize="14" HorizontalOptions="Center"/>
+
+                        <!-- Barra e indicador de Vida -->
+                        <VerticalStackLayout Spacing="2">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Text="❤️ HP" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
+                                <Label Grid.Column="1" Text="{Binding EstadoPartida.VidaEnemigo2}" FontSize="11" TextColor="White" FontAttributes="Bold"/>
+                            </Grid>
+                            <ProgressBar Progress="{Binding EstadoPartida.VidaEnemigo2}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
+                        </VerticalStackLayout>
+
+                        <!-- Maná -->
+                        <Label Text="{Binding EstadoPartida.ManaEnemigo2, StringFormat='🔮 {0} PM'}" FontSize="12" TextColor="#90CAF9" FontAttributes="Bold" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- ESTADO DEL TURNO DINÁMICO -->
+            <Border StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10" HorizontalOptions="FillAndExpand">
+                <!-- El fondo del banner cambia de color según el turno -->
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding EstadoPartida.MiTurno}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#1B2D24" />
+                        <!-- Verde oscuro sutil para tu turno -->
+                    </DataTrigger>
+                    <DataTrigger TargetType="Border" Binding="{Binding EstadoPartida.MiTurno}" Value="False">
+                        <Setter Property="BackgroundColor" Value="#1E1E24" />
+                        <!-- Gris normal de espera -->
+                    </DataTrigger>
+                </Border.Triggers>
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label Text="{Binding EstadoPartida.Estado}" TextColor="#BBBBBB" FontSize="12" VerticalOptions="Center" FontAttributes="Italic"/>
+
+                    <Label Grid.Column="1" FontSize="13" FontAttributes="Bold" VerticalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstadoPartida.MiTurno}" Value="True">
+                                <Setter Property="Text" Value="⚔️ ¡TU TURNO!" />
+                                <Setter Property="TextColor" Value="LightGreen" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding EstadoPartida.MiTurno}" Value="False">
+                                <Setter Property="Text" Value="⏳ ESPERANDO RIVAL" />
+                                <Setter Property="TextColor" Value="#888888" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- ==================== FILA 1: HISTORIAL DE ACCIONES ==================== -->
+        <Border Grid.Row="1" BackgroundColor="#15151A" StrokeThickness="1" Stroke="#2B2B36" StrokeShape="RoundRectangle 12" Padding="12">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="BITÁCORA DE COMBATE" FontSize="11" FontAttributes="Bold" TextColor="#666666" CharacterSpacing="1"/>
+
+                <CollectionView ItemsSource="{Binding Acciones}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="6"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Líneas simples y limpias para el historial -->
+                            <Grid ColumnDefinitions="*, Auto" Padding="0,4">
+                                <Label Grid.Column="0" Text="{Binding Descripcion}" TextColor="#D0D0D0" FontSize="13" LineBreakMode="WordWrap"/>
+                                <Label Grid.Column="1" Text="{Binding Fecha, StringFormat='{0:HH:mm:ss}'}" TextColor="#555555" FontSize="11" VerticalOptions="Center" Margin="8,0,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </VerticalStackLayout>
+        </Border>
 
-            <VerticalStackLayout>
-                <Label Text="Enemigo" />
-                <ProgressBar Progress="{Binding VidaEnemigo}" />
+        <!-- ==================== FILA 2: PANEL DE HABILIDADES ==================== -->
+        <Border Grid.Row="2" BackgroundColor="#1E1E24" StrokeThickness="0" StrokeShape="RoundRectangle 14,14,14,14" Padding="16,12" Margin="0,4,0,0">
+            <VerticalStackLayout Spacing="10">
+
+                <Label Text="TUS HABILIDADES" FontSize="11" FontAttributes="Bold" TextColor="#888888" CharacterSpacing="1"/>
+
+                <!-- Carrusel o lista Horizontal para no amontonar las habilidades hacia abajo -->
+                <CollectionView ItemsSource="{Binding EstadoPartida.HabilidadesJugador1}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Botón de habilidad adaptado a la estética RPG -->
+                            <Button Text="{Binding Nombre}" 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.UsarHabilidadCommand}" 
+                                    CommandParameter="{Binding .}"
+                                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EstadoPartida.MiTurno}"
+                                    BackgroundColor="DarkRed"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    HeightRequest="40"
+                                    Padding="16,0"
+                                    CornerRadius="6">
+                                <!-- Modificador visual para cuando el botón está deshabilitado (No es tu turno) -->
+                                <Button.Triggers>
+                                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                                        <Setter Property="BackgroundColor" Value="#2B2B36" />
+                                        <Setter Property="TextColor" Value="#555555" />
+                                    </Trigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </VerticalStackLayout>
-
-        </Grid>
-
-        <!-- TURNO -->
-        <Label Text="{Binding EstadoPartida}" FontAttributes="Bold"/>
-        <Label Text="{Binding EsMiTurno, StringFormat='Turno: {0}'}"/>
-
-        <!-- ACCIONES -->
-        <CollectionView ItemsSource="{Binding Acciones}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Label Text="{Binding Descripcion}" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-        <!-- HABILIDADES -->
-        <CollectionView ItemsSource="{Binding Habilidades}">
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="2"/>
-            </CollectionView.ItemsLayout>
-
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Button
-                    Text="{Binding Nombre}"
-                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=UsarHabilidadCommand}"
-                    CommandParameter="{Binding}"
-                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=EsMiTurno}" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-    </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentView>
