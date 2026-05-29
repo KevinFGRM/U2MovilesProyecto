@@ -79,5 +79,39 @@ namespace MiniJokeRPGAPP.ViewModels
                 MensajeError = ex.Message;
             }
         }
+
+        [RelayCommand]
+        public async Task SeleccionarImagen()
+        {
+            try
+            {
+                var foto = await MediaPicker.Default.PickPhotoAsync();
+
+                if (foto == null)
+                    return;
+
+                using var stream = await foto.OpenReadAsync();
+
+                using MemoryStream ms = new();
+
+                await stream.CopyToAsync(ms);
+
+                var base64 = Convert.ToBase64String(ms.ToArray());
+
+                EnviarImagenDTO dto = new()
+                {
+                    Receptor = IdUsuario,
+                    ImagenBase64 = base64
+                };
+
+                await mensajesService.EnviarImagen(dto);
+
+                await CargarMensajes();
+            }
+            catch (Exception ex)
+            {
+                MensajeError = ex.Message;
+            }
+        }
     }
 }

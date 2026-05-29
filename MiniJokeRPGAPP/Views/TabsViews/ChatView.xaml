@@ -25,7 +25,7 @@
         </Border>
 
         <!-- ÁREA DE MENSAJES -->
-        <CollectionView Grid.Row="1"  VerticalScrollBarVisibility="Never"
+        <CollectionView Grid.Row="1" VerticalScrollBarVisibility="Never"
                         ItemsSource="{Binding Mensajes}"
                         Margin="10,5">
             <CollectionView.ItemsLayout>
@@ -43,10 +43,23 @@
                                 HorizontalOptions="Start"  
                                 MaximumWidthRequest="260"
                                 Padding="12,8">
-                            <VerticalStackLayout Spacing="2">
+                            <VerticalStackLayout Spacing="6">
+                                <!-- Texto -->
                                 <Label Text="{Binding Contenido}" 
                                        TextColor="#E0E0E0"
-                                       FontSize="14"/>
+                                       FontSize="14"
+                                       IsVisible="{Binding EsTexto}"/>
+
+                                <!-- Imagen enviada por el rival con bordes pulidos -->
+                                <Border IsVisible="{Binding EsImagen}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        HorizontalOptions="Center">
+                                    <Image Source="{Binding Archivo}"
+                                           HeightRequest="220"
+                                           Aspect="AspectFill" />
+                                </Border>
+
                                 <Label Text="{Binding FechaEnvio, StringFormat='{0:t}'}" 
                                        TextColor="#777777"
                                        FontSize="10"
@@ -62,10 +75,23 @@
                                 HorizontalOptions="End" 
                                 MaximumWidthRequest="260"
                                 Padding="12,8">
-                            <VerticalStackLayout Spacing="2">
+                            <VerticalStackLayout Spacing="6">
+                                <!-- Texto -->
                                 <Label Text="{Binding Contenido}" 
                                        TextColor="White"
-                                       FontSize="14"/>
+                                       FontSize="14"
+                                       IsVisible="{Binding EsTexto}"/>
+
+                                <!-- Imagen enviada por ti con bordes pulidos -->
+                                <Border IsVisible="{Binding EsImagen}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        HorizontalOptions="Center">
+                                    <Image Source="{Binding Archivo}"
+                                           HeightRequest="220"
+                                           Aspect="AspectFill" />
+                                </Border>
+
                                 <Label Text="{Binding FechaEnvio, StringFormat='{0:t}'}" 
                                        TextColor="#B39DDB"
                                        FontSize="10"
@@ -78,14 +104,27 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- ÁREA DE ENTRADA DE TEXTO -->
+        <!-- ÁREA DE ENTRADA DE TEXTO Y MEDIOS -->
         <Grid Grid.Row="2" 
-              ColumnDefinitions="*, Auto" 
+              ColumnDefinitions="Auto, *, Auto" 
               Padding="12,10" 
               BackgroundColor="#121212">
 
+            <!-- Botón de Cámara (Acento Gris Neutro para mantener el orden) -->
+            <Button Grid.Column="0" 
+                    Text="📷"
+                    FontSize="16"
+                    TextColor="White"
+                    BackgroundColor="#2B2B36"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    CornerRadius="20"
+                    Padding="0"
+                    Margin="0,0,8,0"
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.SeleccionarImagenCommand}" />
+
             <!-- Campo de Texto Estilizado -->
-            <Border Grid.Column="0" 
+            <Border Grid.Column="1" 
                     BackgroundColor="#1E1E24"
                     StrokeThickness="1"
                     Stroke="#2B2B36"
@@ -103,7 +142,7 @@
             </Border>
 
             <!-- Botón de Enviar (Acento DarkRed con un icono simple) -->
-            <Button Grid.Column="1" 
+            <Button Grid.Column="2" 
                     Text="➔"
                     FontSize="16"
                     TextColor="White"

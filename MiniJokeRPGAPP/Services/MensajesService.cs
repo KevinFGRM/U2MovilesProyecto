@@ -1,4 +1,5 @@
-﻿using MiniJokeRPGAPP.Models.DTOs;
+﻿using Microsoft.Extensions.Configuration;
+using MiniJokeRPGAPP.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
@@ -28,6 +29,17 @@ namespace MiniJokeRPGAPP.Services
             await VerificarError(response);
 
             return await response.Content.ReadFromJsonAsync<ListaMensajesDTO>() ?? new ListaMensajesDTO();
+        }
+
+        internal async Task<bool> EnviarImagen(EnviarImagenDTO dto)
+        {
+            await SetToken();
+
+            var response = await client.PostAsJsonAsync("api/mensajes/imagen", dto);
+
+            await VerificarError(response);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

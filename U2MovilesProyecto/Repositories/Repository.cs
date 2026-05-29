@@ -1,14 +1,15 @@
-﻿using U2MovilesProyecto.Data;
+﻿using MiniJokeRPGAPI.Data;
+using MiniJokeRPGAPI.Models.Entities;
 
 namespace AvisosAPI.Repositories
 {
     public class Repository<T> where T : class
     {
-        public Repository(MiniJokeRpgContext context)
+        public Repository(MinijokerpgContext context)
         {
             Context = context;
         }
-        public MiniJokeRpgContext Context { get; }
+        public MinijokerpgContext Context { get; }
 
         public IEnumerable<T> GetAll()
         {

@@ -2,11 +2,11 @@
 using AvisosAPI.Repositories;
 using MateAventuras_Corregido.Helpers;
 using Microsoft.IdentityModel.Tokens;
+using MiniJokeRPGAPI.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using U2MovilesProyecto.Models.DTOs;
-using U2MovilesProyecto.Models.Entities;
 
 namespace U2MovilesProyecto.Services
 {

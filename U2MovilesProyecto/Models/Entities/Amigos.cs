@@ -1,4 +1,7 @@
-﻿namespace U2MovilesProyecto.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MiniJokeRPGAPI.Models.Entities;
 
 public partial class Amigos
 {

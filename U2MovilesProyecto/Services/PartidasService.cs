@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AvisosAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using MiniJokeRPGAPI.Models.Entities;
 using U2MovilesProyecto.Models.DTOs;
-using U2MovilesProyecto.Models.Entities;
 
 namespace U2MovilesProyecto.Services
 {

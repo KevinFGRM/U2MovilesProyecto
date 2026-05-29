@@ -20,6 +20,13 @@
         public string Contenido { get; set; } = null!;
         public DateTime? FechaEnvio { get; set; }
         public bool EsEmisor { get; set; } // para saber si el mensaje lo envio el usuario actual o no
+        public string Tipo { get; set; } = null!;
+        public string? Archivo { get; set; }
 
+    }
+    public class EnviarImagenDTO
+    {
+        public int Receptor { get; set; }
+        public string ImagenBase64 { get; set; } = null!;
     }
 }

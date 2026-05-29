@@ -1,4 +1,7 @@
-﻿namespace U2MovilesProyecto.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MiniJokeRPGAPI.Models.Entities;
 
 public partial class Mensajes
 {
@@ -11,6 +14,10 @@ public partial class Mensajes
     public string Mensaje { get; set; } = null!;
 
     public DateTime? Fecha { get; set; }
+
+    public string? Tipo { get; set; } = "texto";
+
+    public string? Archivo { get; set; }
 
     public virtual Usuarios EmisorNavigation { get; set; } = null!;
 
