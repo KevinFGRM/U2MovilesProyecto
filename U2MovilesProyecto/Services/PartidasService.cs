@@ -15,6 +15,8 @@ namespace U2MovilesProyecto.Services
         private readonly Repository<Habilidades> habilidadesRepository;
         private readonly Repository<Accionespartida> accionesRepository;
         private readonly Repository<Amigos> amigosRepository;
+        private readonly Repository<Partidahabilidades> partidaHabilidadesRepository;
+        private readonly Random random = new();
 
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IMapper mapper;
@@ -26,6 +28,7 @@ namespace U2MovilesProyecto.Services
             Repository<Habilidades> habilidadesRepository,
             Repository<Accionespartida> accionesRepository,
             Repository<Amigos> amigosRepository,
+            Repository<Partidahabilidades> partidaHabilidadesRepository,
             IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             this.partidasRepository = partidasRepository;
@@ -35,6 +38,7 @@ namespace U2MovilesProyecto.Services
             this.accionesRepository = accionesRepository;
             this.amigosRepository = amigosRepository;
             this.httpContextAccessor = httpContextAccessor;
+            this.partidaHabilidadesRepository = partidaHabilidadesRepository;
             this.mapper = mapper;
         }
 
@@ -179,10 +183,46 @@ namespace U2MovilesProyecto.Services
             var personaje = partidaPersonajesRepository.Query()
                 .First(x => x.IdPartida == dto.IdPartida && x.IdUsuario == usuario);
 
+            int enemigo = partida.Jugador1 == usuario ? partida.Jugador2 : partida.Jugador1;
+
+            if (dto.IdHabilidad == 0)
+            {
+                partida.TurnoActual = enemigo;
+                int manaRecuperado = random.Next(15, 50);
+
+                personaje.ManaActual += manaRecuperado;
+
+                partidaPersonajesRepository.Update(personaje);
+
+                Accionespartida accion2 = new()
+                {
+                    IdPartida = dto.IdPartida,
+                    Usuario = usuario,
+                    Habilidad = null,
+                    Descripcion =
+                        $"Descanso y recupero {manaRecuperado} de mana.",
+                    Fecha = DateTime.Now
+                };
+
+                accionesRepository.Insert(accion2);
+                partidasRepository.Update(partida);
+                return;
+
+            }
             var habilidad = habilidadesRepository.Get(dto.IdHabilidad);
 
             if (habilidad == null)
                 throw new Exception("Habilidad no encontrada.");
+
+
+            var cartaActiva = partidaHabilidadesRepository.Query()
+                .FirstOrDefault(x =>
+                    x.IdPartida == dto.IdPartida &&
+                    x.IdUsuario == usuario &&
+                    x.IdHabilidad == dto.IdHabilidad);
+
+            if (cartaActiva == null)
+                throw new Exception("No puedes usar esa habilidad.");
 
             if (habilidad.IdPersonaje != personaje.IdPersonaje)
                 throw new Exception("La habilidad no pertenece al personaje.");
@@ -190,7 +230,6 @@ namespace U2MovilesProyecto.Services
             if (personaje.ManaActual < habilidad.CostoMana)
                 throw new Exception("Mana insuficiente.");
 
-            int enemigo = partida.Jugador1 == usuario ? partida.Jugador2 : partida.Jugador1;
 
             var objetivo = partidaPersonajesRepository.Query()
                 .First(x => x.IdPartida == dto.IdPartida && x.IdUsuario == enemigo);
@@ -227,7 +266,33 @@ namespace U2MovilesProyecto.Services
                 return;
             }
 
-            partida.TurnoActual = enemigo;
+            partidaHabilidadesRepository.Delete(cartaActiva.Id);
+
+            var idsActuales = partidaHabilidadesRepository.Query()
+                .Where(x => x.IdPartida == dto.IdPartida && x.IdUsuario == usuario).Select(x => x.IdHabilidad).ToList();
+
+
+            var habilidadesDisponibles = habilidadesRepository.Query()
+                .Where(x => x.IdPersonaje == personaje.IdPersonaje &&
+                            !idsActuales.Contains(x.IdHabilidad)).ToList();
+
+            var nuevaCarta = habilidadesDisponibles
+                .OrderBy(x => random.Next())
+                .FirstOrDefault();
+
+            if (nuevaCarta != null)
+            {
+                Partidahabilidades nueva = new()
+                {
+                    IdPartida = dto.IdPartida,
+                    IdUsuario = usuario,
+                    IdHabilidad = nuevaCarta.IdHabilidad
+                };
+
+                partidaHabilidadesRepository.Insert(nueva);
+            }
+
+
 
             partidasRepository.Update(partida);
         }
@@ -271,6 +336,7 @@ namespace U2MovilesProyecto.Services
             return habilidades.Select(h => mapper.Map<HabilidadResponseDto>(h)).ToList();
         }
 
+        
         public EstadoPartidaDto ObtenerEstado(int idPartida)
         {
             int usuario = ObtenerUsuario();
@@ -323,8 +389,46 @@ namespace U2MovilesProyecto.Services
                 estado.Ganador = partida.Ganador == usuario ? $"{(partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "Tú")} (Tú)" 
                               : (partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "(Oponente)");
             }
-            var habs = CargarHabilidades(miPersonaje.IdPersonaje);
-            estado.HabilidadesJugador1 = habs;
+
+            var habilidadesGuardadas = partidaHabilidadesRepository.Query()
+                .Where(x =>
+                    x.IdPartida == idPartida &&
+                    x.IdUsuario == usuario)
+                .Include(x => x.IdHabilidadNavigation)
+                .ToList();
+            if (!habilidadesGuardadas.Any())
+            {
+                var todasHabilidades = habilidadesRepository.Query()
+                    .Where(x => x.IdPersonaje == miPersonaje.IdPersonaje)
+                    .ToList();
+
+                var randoms = todasHabilidades
+                    .OrderBy(x => random.Next())
+                    .Take(3)
+                    .ToList();
+
+                foreach (var habilidad in randoms)
+                {
+                    Partidahabilidades ph = new()
+                    {
+                        IdPartida = idPartida,
+                        IdUsuario = usuario,
+                        IdHabilidad = habilidad.IdHabilidad
+                    };
+
+                    partidaHabilidadesRepository.Insert(ph);
+                }
+
+                habilidadesGuardadas = partidaHabilidadesRepository.Query()
+                    .Where(x =>
+                        x.IdPartida == idPartida &&
+                        x.IdUsuario == usuario)
+                    .Include(x => x.IdHabilidadNavigation)
+                    .ToList();
+            }
+
+            estado.HabilidadesJugador1 = habilidadesGuardadas
+                .Select(x => mapper.Map<HabilidadResponseDto>(x.IdHabilidadNavigation)).ToList();
 
             return estado;
         }

@@ -32,6 +32,12 @@ namespace MiniJokeRPGAPP.ViewModels
         int idPersonaje;
 
         [ObservableProperty]
+        string ganadorTexto;
+
+        [ObservableProperty]
+        bool plantilla;
+
+        [ObservableProperty]
         EstadoPartidaDto? estadoPartida;
 
         [ObservableProperty]
@@ -47,6 +53,10 @@ namespace MiniJokeRPGAPP.ViewModels
         }
 
         [RelayCommand]
+        public async Task CerrarPartida()
+        {
+            await MenuVM.CambiarVista("Partidas");
+        }
         public async Task CargarPartidas()
         {
             try
@@ -85,8 +95,12 @@ namespace MiniJokeRPGAPP.ViewModels
                 {
                     if (response.JugadorActualEligio && !response.OponenteEligio)
                     {
-                        // mandar a una vista de espera o algo asi
+                        Plantilla = true;
+                        EstadoPartida = null;
+                        GanadorTexto = "";
+                        Acciones.Clear();
                         MenuVM.VistaActual = "Juego";
+
                     }
                     else if(!response.JugadorActualEligio)
                     {
@@ -96,6 +110,7 @@ namespace MiniJokeRPGAPP.ViewModels
                     }
                     else if(response.JugadorActualEligio && response.OponenteEligio)
                     {
+                        Plantilla = false;
                         MenuVM.VistaActual = "Juego";
                         IdPartida = partida.IdPartida;
                         await CargarEstado();
@@ -155,6 +170,7 @@ namespace MiniJokeRPGAPP.ViewModels
                 await partidasService.SeleccionarPersonaje(dto);
 
                 //await Shell.Current.GoToAsync("//Partida"); // Navega a pantalla de partida
+                MenuVM.VistaActual = "Juego";
 
             }
             catch (Exception ex)
@@ -216,7 +232,6 @@ namespace MiniJokeRPGAPP.ViewModels
                 };
 
                 await partidasService.RealizarAccion(dto);
-
                 // Recargar historial actualizado
                 await CargarEstado();
             }
@@ -225,10 +240,35 @@ namespace MiniJokeRPGAPP.ViewModels
                 MensajeError = ex.Message;
             }
         }
+        [RelayCommand]
+        public async Task Descansar(HabilidadResponseDto habilidad)
+        {
+            try
+            {
+                RealizarAccionDto dto = new()
+                {
+                    IdPartida = IdPartida,
+                    IdHabilidad = 0
+                };
+
+                await partidasService.RealizarAccion(dto);
+                // Recargar historial actualizado
+                await CargarEstado();
+            }
+            catch (Exception ex)
+            {
+                MensajeError = ex.Message;
+            }
+
+        }
         public async Task CargarEstado()
         {
             var estado = await partidasService.ObtenerEstado(IdPartida);
             EstadoPartida = estado;
+            if(EstadoPartida != null && EstadoPartida.Estado == "finalizada")
+            {
+                GanadorTexto = $"Gano {EstadoPartida.Ganador}, un experto en combate.";
+            }
             await CargarAcciones();
         }
     }

@@ -21,12 +21,4 @@ namespace U2MovilesProyecto.Validators
         }
     }
 
-    public class RealizarAccionValidator : AbstractValidator<RealizarAccionDto>
-    {
-        public RealizarAccionValidator()
-        {
-            RuleFor(x => x.IdHabilidad)
-                .GreaterThan(0);
-        }
-    }
 }

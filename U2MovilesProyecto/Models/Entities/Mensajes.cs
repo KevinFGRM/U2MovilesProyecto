@@ -15,7 +15,7 @@ public partial class Mensajes
 
     public DateTime? Fecha { get; set; }
 
-    public string? Tipo { get; set; } = "texto";
+    public string? Tipo { get; set; }
 
     public string? Archivo { get; set; }
 

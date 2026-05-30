@@ -22,4 +22,6 @@ public partial class Habilidades
     public virtual ICollection<Accionespartida> Accionespartida { get; set; } = new List<Accionespartida>();
 
     public virtual Personajes IdPersonajeNavigation { get; set; } = null!;
+
+    public virtual ICollection<Partidahabilidades> Partidahabilidades { get; set; } = new List<Partidahabilidades>();
 }

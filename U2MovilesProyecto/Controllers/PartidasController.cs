@@ -15,18 +15,15 @@ namespace U2MovilesProyecto.Controllers
 
         private readonly IValidator<CrearPartidaDto> crearValidator;
         private readonly IValidator<SeleccionarPersonajeDto> personajeValidator;
-        private readonly IValidator<RealizarAccionDto> accionValidator;
 
         public PartidasController(
             PartidasService service,
             IValidator<CrearPartidaDto> crearValidator,
-            IValidator<SeleccionarPersonajeDto> personajeValidator,
-            IValidator<RealizarAccionDto> accionValidator)
+            IValidator<SeleccionarPersonajeDto> personajeValidator)
         {
             this.service = service;
             this.crearValidator = crearValidator;
             this.personajeValidator = personajeValidator;
-            this.accionValidator = accionValidator;
         }
 
         [HttpPost]
@@ -96,11 +93,6 @@ namespace U2MovilesProyecto.Controllers
         [HttpPost("accion")]
         public IActionResult Accion(RealizarAccionDto dto)
         {
-            var result = accionValidator.Validate(dto);
-
-            if (!result.IsValid)
-                return BadRequest(result.Errors);
-
             try
             {
                 service.RealizarAccion(dto);
@@ -112,7 +104,7 @@ namespace U2MovilesProyecto.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         [HttpGet("{id}/acciones")]
         public IActionResult Acciones(int id)
         {

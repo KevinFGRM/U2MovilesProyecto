@@ -27,5 +27,7 @@ public partial class Partidas
 
     public virtual Usuarios Jugador2Navigation { get; set; } = null!;
 
+    public virtual ICollection<Partidahabilidades> Partidahabilidades { get; set; } = new List<Partidahabilidades>();
+
     public virtual ICollection<Partidapersonajes> Partidapersonajes { get; set; } = new List<Partidapersonajes>();
 }

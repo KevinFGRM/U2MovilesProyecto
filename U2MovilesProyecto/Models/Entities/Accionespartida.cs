@@ -11,7 +11,7 @@ public partial class Accionespartida
 
     public int Usuario { get; set; }
 
-    public int Habilidad { get; set; }
+    public int? Habilidad { get; set; }
 
     public string? Descripcion { get; set; }
 

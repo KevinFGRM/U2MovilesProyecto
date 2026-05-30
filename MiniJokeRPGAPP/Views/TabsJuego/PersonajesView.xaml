@@ -22,7 +22,7 @@
                                FontAttributes="Bold" 
                                TextColor="DarkRed"
                                CharacterSpacing="1"/>
-                        <Label Text="{Binding EstadoPartida}" 
+                        <Label Text="{Binding EstadoPartida.Estado}" 
                                FontSize="13" 
                                TextColor="#888888"
                                FontAttributes="Italic"/>

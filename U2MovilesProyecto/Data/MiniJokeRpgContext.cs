@@ -27,6 +27,8 @@ public partial class MinijokerpgContext : DbContext
 
     public virtual DbSet<Mensajes> Mensajes { get; set; }
 
+    public virtual DbSet<Partidahabilidades> Partidahabilidades { get; set; }
+
     public virtual DbSet<Partidapersonajes> Partidapersonajes { get; set; }
 
     public virtual DbSet<Partidas> Partidas { get; set; }
@@ -34,6 +36,10 @@ public partial class MinijokerpgContext : DbContext
     public virtual DbSet<Personajes> Personajes { get; set; }
 
     public virtual DbSet<Usuarios> Usuarios { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=minijokerpg", Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.2.0-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,11 +53,11 @@ public partial class MinijokerpgContext : DbContext
 
             entity.ToTable("accionespartida");
 
-            entity.HasIndex(e => e.Habilidad, "Habilidad");
-
             entity.HasIndex(e => e.IdPartida, "IdPartida");
 
             entity.HasIndex(e => e.Usuario, "Usuario");
+
+            entity.HasIndex(e => e.Habilidad, "accionespartida_ibfk_3");
 
             entity.Property(e => e.Descripcion).HasColumnType("text");
             entity.Property(e => e.Fecha)
@@ -60,7 +66,6 @@ public partial class MinijokerpgContext : DbContext
 
             entity.HasOne(d => d.HabilidadNavigation).WithMany(p => p.Accionespartida)
                 .HasForeignKey(d => d.Habilidad)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("accionespartida_ibfk_3");
 
             entity.HasOne(d => d.IdPartidaNavigation).WithMany(p => p.Accionespartida)
@@ -127,7 +132,7 @@ public partial class MinijokerpgContext : DbContext
 
             entity.ToTable("habilidades");
 
-            entity.HasIndex(e => e.IdPersonaje, "IdPersonaje");
+            entity.HasIndex(e => e.IdPersonaje, "habilidades_ibfk_1");
 
             entity.Property(e => e.CostoMana).HasDefaultValueSql("'0'");
             entity.Property(e => e.Curacion).HasDefaultValueSql("'0'");
@@ -137,7 +142,6 @@ public partial class MinijokerpgContext : DbContext
 
             entity.HasOne(d => d.IdPersonajeNavigation).WithMany(p => p.Habilidades)
                 .HasForeignKey(d => d.IdPersonaje)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("habilidades_ibfk_1");
         });
 
@@ -171,6 +175,34 @@ public partial class MinijokerpgContext : DbContext
                 .HasConstraintName("mensajes_ibfk_2");
         });
 
+        modelBuilder.Entity<Partidahabilidades>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("partidahabilidades");
+
+            entity.HasIndex(e => e.IdHabilidad, "IdHabilidad");
+
+            entity.HasIndex(e => e.IdPartida, "IdPartida");
+
+            entity.HasIndex(e => e.IdUsuario, "IdUsuario");
+
+            entity.HasOne(d => d.IdHabilidadNavigation).WithMany(p => p.Partidahabilidades)
+                .HasForeignKey(d => d.IdHabilidad)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("partidahabilidades_ibfk_3");
+
+            entity.HasOne(d => d.IdPartidaNavigation).WithMany(p => p.Partidahabilidades)
+                .HasForeignKey(d => d.IdPartida)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("partidahabilidades_ibfk_1");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Partidahabilidades)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("partidahabilidades_ibfk_2");
+        });
+
         modelBuilder.Entity<Partidapersonajes>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -179,9 +211,9 @@ public partial class MinijokerpgContext : DbContext
 
             entity.HasIndex(e => e.IdPartida, "IdPartida");
 
-            entity.HasIndex(e => e.IdPersonaje, "IdPersonaje");
-
             entity.HasIndex(e => e.IdUsuario, "IdUsuario");
+
+            entity.HasIndex(e => e.IdPersonaje, "partidapersonajes_ibfk_3");
 
             entity.HasOne(d => d.IdPartidaNavigation).WithMany(p => p.Partidapersonajes)
                 .HasForeignKey(d => d.IdPartida)
@@ -190,7 +222,6 @@ public partial class MinijokerpgContext : DbContext
 
             entity.HasOne(d => d.IdPersonajeNavigation).WithMany(p => p.Partidapersonajes)
                 .HasForeignKey(d => d.IdPersonaje)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("partidapersonajes_ibfk_3");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Partidapersonajes)

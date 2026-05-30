@@ -27,6 +27,8 @@ public partial class Usuarios
 
     public virtual ICollection<Mensajes> MensajesReceptorNavigation { get; set; } = new List<Mensajes>();
 
+    public virtual ICollection<Partidahabilidades> Partidahabilidades { get; set; } = new List<Partidahabilidades>();
+
     public virtual ICollection<Partidapersonajes> Partidapersonajes { get; set; } = new List<Partidapersonajes>();
 
     public virtual ICollection<Partidas> PartidasGanadorNavigation { get; set; } = new List<Partidas>();
