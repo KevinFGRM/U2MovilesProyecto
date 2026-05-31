@@ -28,7 +28,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AmigosService>();
 builder.Services.AddScoped<MensajesService>();
 builder.Services.AddScoped<PartidasService>();
-
+builder.Services.AddScoped<NotificacionesService>();
 
 
 
@@ -61,6 +61,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseStaticFiles();
+app.UseFileServer();
 
 app.Run();

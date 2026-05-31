@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,11 +10,15 @@ namespace MiniJokeRPGAPP.Services
     {
         public readonly HttpClient client;
 
-        public string url = "https://localhost:7202/";
+        public string url = "https://2ntlx3wv-7202.usw3.devtunnels.ms/";
 
         public GeneralService()
         {
-            client = new HttpClient
+            client = new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            })
             {
                 BaseAddress = new Uri(url)
             };
