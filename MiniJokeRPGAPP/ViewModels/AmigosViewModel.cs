@@ -28,7 +28,7 @@ namespace MiniJokeRPGAPP.ViewModels
         string nombreUsuario = string.Empty;
 
         [ObservableProperty]
-        string pestañaSeleccionada = "Todos";
+        string pestañaSeleccionada = "Amigos";
 
         public MenuViewModel MenuVM { get; set; } = null!;
 
@@ -191,7 +191,7 @@ namespace MiniJokeRPGAPP.ViewModels
                 // el toast
                 MensajeError = "Partida creada exitosamente.";
 
-                MenuVM.VistaActual = "Partidas";
+                await MenuVM.CambiarVista("Partidas");
 
             }
             catch (Exception ex)

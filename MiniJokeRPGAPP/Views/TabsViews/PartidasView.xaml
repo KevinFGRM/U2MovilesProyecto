@@ -85,13 +85,30 @@
                                     Margin="0,4,0,0"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EntrarAPartidaCommand}"
                                     CommandParameter="{Binding .}">
-                                <!--<Button.Triggers>
+                                <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding Estado}" Value="Finalizada">
                                         <Setter Property="IsVisible" Value="False"/>
                                     </DataTrigger>
-                                </Button.Triggers>-->
+                                </Button.Triggers>
                             </Button>
 
+                            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    BackgroundColor="Green"
+                                    IsVisible="False"
+                                    StrokeShape="RoundRectangle 6" 
+                                    HeightRequest="40"
+                                    Margin="0,4,0,0">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding Estado}" Value="Finalizada">
+                                        <Setter Property="IsVisible" Value="True"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="{Binding Ganador, StringFormat='Ganador - {0}'}" VerticalOptions="Center" HorizontalOptions="Center"
+                                    FontSize="13"
+                                    FontAttributes="Bold"
+                                    TextColor="White">
+                                </Label>
+                            </Border>
                         </Grid>
                     </Border>
                 </DataTemplate>

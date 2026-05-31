@@ -170,6 +170,10 @@ namespace MiniJokeRPGAPP.ViewModels
                 await partidasService.SeleccionarPersonaje(dto);
 
                 //await Shell.Current.GoToAsync("//Partida"); // Navega a pantalla de partida
+                Plantilla = true;
+                EstadoPartida = null;
+                GanadorTexto = "";
+                Acciones.Clear();
                 MenuVM.VistaActual = "Juego";
 
             }
@@ -268,7 +272,9 @@ namespace MiniJokeRPGAPP.ViewModels
             if(EstadoPartida != null && EstadoPartida.Estado == "finalizada")
             {
                 GanadorTexto = $"Gano {EstadoPartida.Ganador}, un experto en combate.";
+                return;
             }
+            
             await CargarAcciones();
         }
     }

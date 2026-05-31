@@ -2,7 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsJuego.JuegoView"
-             BackgroundColor="#121212">
+             BackgroundColor="#121212" x:Name="juegoView">
     <Grid RowDefinitions="Auto, *, Auto" Padding="12" RowSpacing="12">
 
         <VerticalStackLayout Grid.Row="0" Spacing="10">
@@ -141,7 +141,8 @@
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Button Text="{Binding Nombre}" 
+                            <VerticalStackLayout>
+                                <Button Text="{Binding Nombre}" 
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.UsarHabilidadCommand}" 
                                     CommandParameter="{Binding .}"
                                     IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EstadoPartida.MiTurno}"
@@ -152,13 +153,14 @@
                                     HeightRequest="42"
                                     Padding="4,0"
                                     CornerRadius="6">
-                                <Button.Triggers>
-                                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
-                                        <Setter Property="BackgroundColor" Value="#2B2B36" />
-                                        <Setter Property="TextColor" Value="#555555" />
-                                    </Trigger>
-                                </Button.Triggers>
-                            </Button>
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.EstadoPartida.MiTurno}" Value="False">
+                                            <Setter Property="BackgroundColor" Value="#2B2B36" />
+                                            <Setter Property="TextColor" Value="#555555" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

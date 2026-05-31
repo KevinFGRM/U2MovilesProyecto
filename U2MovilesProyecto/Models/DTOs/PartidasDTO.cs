@@ -27,6 +27,8 @@
         public DateTime? FechaInicio { get; set; }
         public bool JugadorActualEligio { get; set; }
         public bool OponenteEligio { get; set; }
+        public string? Ganador { get; set; }
+
     }
 
     public class AccionResponseDTO
