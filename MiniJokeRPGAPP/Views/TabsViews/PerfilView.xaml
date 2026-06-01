@@ -3,14 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsViews.PerfilView"
              BackgroundColor="#121212">
-    <!-- Fondo oscuro general -->
-
-    <!-- Grid para centrar la tarjeta en la pantalla -->
+    
     <Grid VerticalOptions="Center" 
           HorizontalOptions="Center" 
           Padding="20">
 
-        <!-- Tarjeta de Perfil Sencilla -->
         <Border BackgroundColor="#1E1E24"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 12"
@@ -19,13 +16,11 @@
 
             <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
 
-                <!-- Icono de Cuenta o Avatar Simbólico -->
                 <Label Text="👤" 
                        FontSize="40" 
                        HorizontalOptions="Center" 
                        Margin="0,0,0,5"/>
 
-                <!-- Texto de Contexto Opcional (Mantiene la simplicidad) -->
                 <Label Text="OPCIONES DE CUENTA" 
                        TextColor="#888888" 
                        FontSize="11" 
@@ -33,7 +28,6 @@
                        CharacterSpacing="1"
                        HorizontalOptions="Center" />
 
-                <!-- Botón de Salida Estilizado -->
                 <Button Text="CERRAR SESIÓN" 
                         Command="{Binding LogoutCommand}"
                         BackgroundColor="DarkRed"

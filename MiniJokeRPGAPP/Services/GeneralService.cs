@@ -14,6 +14,7 @@ namespace MiniJokeRPGAPP.Services
 
         public GeneralService()
         {
+            // para que funcione en emulador sin conflictos de ssl en teoria
             client = new HttpClient(new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback =

@@ -10,20 +10,15 @@ namespace MiniJokeRPGAPP.Services
     {
         public async Task<LoginResponseDto?> Login(LoginDto dto)
         {
-            var response =
-                await client.PostAsJsonAsync("api/auth", dto);
+            var response = await client.PostAsJsonAsync("api/auth", dto);
 
             await VerificarError(response);
 
-            var result =
-                await response.Content
-                .ReadFromJsonAsync<LoginResponseDto>();
+            var result = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
 
             if (result != null)
             {
-                await SecureStorage.SetAsync(
-                    "Token",
-                    result.Token);
+                await SecureStorage.SetAsync("Token", result.Token);
             }
 
             return result;
@@ -31,10 +26,7 @@ namespace MiniJokeRPGAPP.Services
 
         public async Task<bool> Register(RegisterDto dto)
         {
-            var response =
-                await client.PostAsJsonAsync(
-                    "api/auth/register",
-                    dto);
+            var response = await client.PostAsJsonAsync("api/auth/register", dto);
 
             await VerificarError(response);
 

@@ -346,7 +346,6 @@ namespace U2MovilesProyecto.Services
         {
             int usuario = ObtenerUsuario();
 
-            // quien me manda a mi a hacer un juego, que pesadilla.
             var partida = partidasRepository.Query().Include(x => x.Partidapersonajes).Include(x => x.Jugador1Navigation)
                 .Include(x => x.Jugador2Navigation).FirstOrDefault(x => x.IdPartida == idPartida);
 

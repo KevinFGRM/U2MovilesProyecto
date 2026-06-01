@@ -64,17 +64,14 @@
             </juego:JuegoView>
         </Grid>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR (Estilo TabBar de Videojuego) -->
         <Border Grid.Row="1" 
                 BackgroundColor="#1E1E24" 
                 StrokeThickness="1" 
                 Stroke="#2B2B36"
                 StrokeShape="RoundRectangle 16,16,0,0">
-            <!-- Esquinas superiores redondeadas -->
 
             <Grid ColumnDefinitions="*,*,*">
 
-                <!-- PESTAÑA: PARTIDAS -->
                 <Grid Grid.Column="0">
                     <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
                         <Label Text="⚔️" FontSize="18" HorizontalOptions="Center">
@@ -92,11 +89,9 @@
                             </Label.Triggers>
                         </Label>
                     </VerticalStackLayout>
-                    <!-- El botón invisible cubre todo el cuadrante para facilitar el toque -->
                     <Button BackgroundColor="Transparent" CornerRadius="0" Command="{Binding CambiarVistaCommand}" CommandParameter="Partidas" />
                 </Grid>
 
-                <!-- PESTAÑA: AMIGOS -->
                 <Grid Grid.Column="1">
                     <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
                         <Label Text="👥" FontSize="18" HorizontalOptions="Center">
@@ -117,7 +112,6 @@
                     <Button BackgroundColor="Transparent" CornerRadius="0" Command="{Binding CambiarVistaCommand}" CommandParameter="Amigos" />
                 </Grid>
 
-                <!-- PESTAÑA: PERFIL -->
                 <Grid Grid.Column="2">
                     <VerticalStackLayout VerticalOptions="Center" Spacing="2" InputTransparent="True">
                         <Label Text="👤" FontSize="18" HorizontalOptions="Center">

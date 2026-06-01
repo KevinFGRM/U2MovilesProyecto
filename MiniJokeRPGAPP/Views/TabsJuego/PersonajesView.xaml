@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsJuego.PersonajesView"
              BackgroundColor="#121212">
-    <!-- Mismo fondo oscuro profundo -->
     <Grid>
 
         <CollectionView ItemsSource="{Binding Personajes}" Margin="15,10">
@@ -11,7 +10,6 @@
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="20"/>
             </CollectionView.ItemsLayout>
 
-            <!-- ENCABEZADO DE LA VISTA -->
             <CollectionView.Header>
                 <Border BackgroundColor="Transparent" 
                         StrokeThickness="0" 
@@ -26,7 +24,6 @@
                 </Border>
             </CollectionView.Header>
 
-            <!-- PLANTILLA DE CADA PERSONAJE -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border BackgroundColor="#1E1E24"
@@ -37,7 +34,6 @@
 
                         <VerticalStackLayout Spacing="16">
 
-                            <!-- Nombre del Héroe -->
                             <Label Text="{Binding Nombre}" 
                                    FontSize="22" 
                                    FontAttributes="Bold" 
@@ -45,10 +41,8 @@
                                    TextColor="#E0E0E0"
                                    CharacterSpacing="0.5"/>
 
-                            <!-- GRILLA DE ESTADÍSTICAS (Compacta y Limpia) -->
                             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
 
-                                <!-- Vida -->
                                 <Border Grid.Row="0" Grid.Column="0" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="❤️" VerticalOptions="Center"/>
@@ -59,7 +53,6 @@
                                     </HorizontalStackLayout>
                                 </Border>
 
-                                <!-- Maná -->
                                 <Border Grid.Row="0" Grid.Column="1" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="🔮" VerticalOptions="Center"/>
@@ -70,7 +63,6 @@
                                     </HorizontalStackLayout>
                                 </Border>
 
-                                <!-- Ataque -->
                                 <Border Grid.Row="1" Grid.Column="0" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="⚔️" VerticalOptions="Center"/>
@@ -81,7 +73,6 @@
                                     </HorizontalStackLayout>
                                 </Border>
 
-                                <!-- Defensa -->
                                 <Border Grid.Row="1" Grid.Column="1" BackgroundColor="#15151A" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6">
                                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
                                         <Label Text="🛡️" VerticalOptions="Center"/>
@@ -93,13 +84,11 @@
                                 </Border>
                             </Grid>
 
-                            <!-- SECCIÓN DE HABILIDADES -->
                             <Label Text="HABILIDADES" FontSize="12" FontAttributes="Bold" TextColor="#888888" CharacterSpacing="1" Margin="0,5,0,-5"/>
 
                             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Habilidades}" Spacing="8">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
-                                        <!-- Sub-tarjeta con acento sutil Índigo para Habilidades -->
                                         <Border BackgroundColor="#15151A" 
                                                 StrokeThickness="1"
                                                 Stroke="Indigo"
@@ -110,7 +99,6 @@
                                                 <Label Text="{Binding Nombre}" FontSize="14" FontAttributes="Bold" TextColor="White"/>
                                                 <Label Text="{Binding Descripcion}" FontSize="12" TextColor="#BBBBBB" LineHeight="1.2"/>
 
-                                                <!-- Atributos de la habilidad en línea -->
                                                 <Grid Margin="0,4,0,0" ColumnDefinitions="*,*,*">
                                                     <Label Text="{Binding CostoMana, StringFormat='🔮 {0} PM'}" FontSize="11" TextColor="#90CAF9"/>
                                                     <Label Grid.Column="1" Text="{Binding Dano, StringFormat='💥 {0} DMG'}" FontSize="11" TextColor="Tomato"/>
@@ -123,7 +111,6 @@
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
 
-                            <!-- BOTÓN ACCIÓN PRINCIPAL (DarkRed) -->
                             <Button Text="ELEGIR HÉROE" 
                                     FontSize="14"
                                     FontAttributes="Bold"

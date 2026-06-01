@@ -14,7 +14,7 @@ namespace U2MovilesProyecto.Services
         public NotificacionesService(Repository<Fcmtokens> repository)
         {
             this.repository = repository;
-
+            // codigo con ia, para evitar errores. ya que el original no dejaba.
             // Solo inicializar Firebase en entornos que lo soportan
             if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
             {
@@ -30,7 +30,6 @@ namespace U2MovilesProyecto.Services
                 }
                 catch (Exception ex)
                 {
-                    // Log el error pero no detengas la app
                     Console.WriteLine($"Firebase no disponible: {ex.Message}");
                 }
             }
