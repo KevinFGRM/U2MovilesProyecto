@@ -13,16 +13,31 @@ namespace U2MovilesProyecto.Services
 
         public NotificacionesService(Repository<Fcmtokens> repository)
         {
-
-            if (FirebaseApp.DefaultInstance == null)
-            {
-                FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile("wwwroot/fcmkey.json")
-                });
-            }
-
             this.repository = repository;
+
+            // Solo inicializar Firebase en entornos que lo soportan
+            if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+            {
+                try
+                {
+                    if (FirebaseApp.DefaultInstance == null)
+                    {
+                        FirebaseApp.Create(new AppOptions()
+                        {
+                            Credential = GoogleCredential.FromFile("wwwroot/fcmkey.json")
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log el error pero no detengas la app
+                    Console.WriteLine($"Firebase no disponible: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Firebase no está disponible en este sistema operativo");
+            }
         }
 
         public void EnviarNotificacion(int idUsuario, string titulo, string mensaje)

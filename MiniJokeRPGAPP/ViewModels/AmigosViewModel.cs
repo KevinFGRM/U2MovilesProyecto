@@ -1,11 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#if ANDROID
+using Android.Widget;
+#endif
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+// solo android
+#if ANDROID
+using Google.Android.Material.Snackbar;
+#endif
 using MiniJokeRPGAPP.Models.DTOs;
+using MiniJokeRPGAPP.Services;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using MiniJokeRPGAPP.Services;
 using System.Collections.ObjectModel;
+using System.Text;
 
 
 namespace MiniJokeRPGAPP.ViewModels
@@ -48,7 +55,7 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 IsBusy = true;
-
+                MensajeError = "";
 
                 Usuarios.Clear();
 
@@ -76,6 +83,7 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 IsBusy = true;
+                MensajeError = "";
 
                 Usuarios.Clear();
 
@@ -108,6 +116,7 @@ namespace MiniJokeRPGAPP.ViewModels
             try
             {
                 IsBusy = true;
+                MensajeError = "";
 
                 Usuarios.Clear();
 
@@ -134,14 +143,29 @@ namespace MiniJokeRPGAPP.ViewModels
         {
             try
             {
+                MensajeError = "";
+
                 AgregarAmigoDTO dto = new()
                 {
                     NombreUsuario = usuario.NombreUsuario
                 };
 
                 await amigosService.AgregarAmigo(dto);
+// Codigo generado con IA indicandole que implemente snackbar solamente para android
+#if ANDROID
 
+                var activity = Platform.CurrentActivity;
+                var view = activity?.FindViewById(Android.Resource.Id.Content);
+
+                if (view != null)
+                {
+                    Snackbar.Make(view, "Amigo Agregado con exito", Snackbar.LengthShort)
+                            .SetAction("OK", v => { })
+                            .Show();
+                }
+#endif
                 await CargarUsuarios();
+
             }
             catch (Exception ex)
             {
@@ -154,6 +178,8 @@ namespace MiniJokeRPGAPP.ViewModels
         {
             try
             {
+                MensajeError = "";
+
                 AceptarAmigoDTO dto = new()
                 {
                     IdUsuario = usuario.IdUsuario
@@ -181,6 +207,8 @@ namespace MiniJokeRPGAPP.ViewModels
         {
             try
             {
+                MensajeError = "";
+
                 CrearPartidaDto dto = new()
                 {
                     IdJugador2 = amigo.IdUsuario
@@ -189,6 +217,14 @@ namespace MiniJokeRPGAPP.ViewModels
                 await partidasService.CrearPartida(dto);
 
                 // el toast
+#if ANDROID
+                // Código específico para Android
+                var activity = Platform.CurrentActivity;
+                if (activity != null)
+                {
+                    Toast.MakeText(activity, "Partida creada exitosamente.", ToastLength.Short).Show();
+                }
+#endif
                 MensajeError = "Partida creada exitosamente.";
 
                 await MenuVM.CambiarVista("Partidas");
@@ -203,6 +239,8 @@ namespace MiniJokeRPGAPP.ViewModels
         [RelayCommand]
         public async Task AbrirChat(UsuarioResponseDTO usuario)
         {
+            MensajeError = "";
+
             MenuVM.MensajesVM.IdUsuario = usuario.IdUsuario;
 
             await MenuVM.MensajesVM.CargarMensajes();

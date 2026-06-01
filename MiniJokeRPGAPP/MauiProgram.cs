@@ -19,7 +19,7 @@ namespace MiniJokeRPGAPP
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<AmigosService>();

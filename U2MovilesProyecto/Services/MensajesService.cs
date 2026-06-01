@@ -13,20 +13,20 @@ namespace U2MovilesProyecto.Services
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
-        private readonly NotificacionesService notificacionesService;
+        //private readonly NotificacionesService notificacionesService;
 
         public MensajesService(
             Repository<Mensajes> mensajesRepository,
             Repository<Usuarios> usuariosRepository,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
-            NotificacionesService notificacionesService
+            //NotificacionesService notificacionesService,
             IMapper mapper)
         {
             this.mensajesRepository = mensajesRepository;
             this.usuariosRepository = usuariosRepository;
             this.httpContextAccessor = httpContextAccessor;
-            this.notificacionesService = notificacionesService;
+            //this.notificacionesService = notificacionesService;
             this.configuration = configuration;
             this.mapper = mapper;
         }
@@ -54,20 +54,11 @@ namespace U2MovilesProyecto.Services
             mensajesRepository.Insert(mensaje);
 
 
-            notificacionesService.EnviarNotificacion(
-                        dto.IdReceptor,
-                        "Nuevo mensaje",
-                        "Te enviaron un mensaje"
-                    );            //var tokens = context.Fcmtokens
-            //    .Where(x => x.IdUsuario == idReceptor)
-            //    .Select(x => x.Token)
-            //    .ToList();
-
-            //notificacionesService.EnviarNotificaciones(
-            //    tokens,
-            //    "Nuevo mensaje",
-            //    "Te enviaron un mensaje"
-            //);
+            //notificacionesService.EnviarNotificacion(
+            //            dto.IdReceptor,
+            //            "Nuevo mensaje",
+            //            "Te enviaron un mensaje"
+            //        );
         }
 
         public ListaMensajesDTO ObtenerChat(int idUsuario2)

@@ -3,11 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsViews.ChatView"
              BackgroundColor="#121212">
-    <!-- Mismo fondo oscuro profundo -->
-
     <Grid RowDefinitions="Auto, *, Auto">
 
-        <!-- ENCABEZADO: Nombre del Amigo / Rival -->
         <Border Grid.Row="0" 
                 BackgroundColor="#1E1E24" 
                 StrokeThickness="0"
@@ -24,10 +21,11 @@
             </HorizontalStackLayout>
         </Border>
 
-        <!-- ÁREA DE MENSAJES -->
-        <CollectionView Grid.Row="1" VerticalScrollBarVisibility="Never"
+        <CollectionView Grid.Row="1" 
+                        VerticalScrollBarVisibility="Never"
                         ItemsSource="{Binding Mensajes}"
-                        Margin="10,5">
+                        Margin="10,5"
+                        ItemsUpdatingScrollMode="KeepLastItemInView">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
             </CollectionView.ItemsLayout>
@@ -35,7 +33,6 @@
                 <DataTemplate>
                     <Grid Padding="2,0">
 
-                        <!-- CASO 1: Mensaje Recibido (No Es Emisor) -> Gris Oscuro Neutro -->
                         <Border IsVisible="{Binding NoEsEmisor}" 
                                 BackgroundColor="#1E1E24"
                                 StrokeThickness="0"
@@ -44,13 +41,11 @@
                                 MaximumWidthRequest="260"
                                 Padding="12,8">
                             <VerticalStackLayout Spacing="6">
-                                <!-- Texto -->
                                 <Label Text="{Binding Contenido}" 
                                        TextColor="#E0E0E0"
                                        FontSize="14"
                                        IsVisible="{Binding EsTexto}"/>
 
-                                <!-- Imagen enviada por el rival con bordes pulidos -->
                                 <Border IsVisible="{Binding EsImagen}"
                                         StrokeShape="RoundRectangle 8"
                                         StrokeThickness="0"
@@ -67,7 +62,6 @@
                             </VerticalStackLayout>
                         </Border>
 
-                        <!-- CASO 2: Mensaje Enviado (Es Emisor) -> Color Místico Índigo -->
                         <Border IsVisible="{Binding EsEmisor}" 
                                 BackgroundColor="Indigo"
                                 StrokeThickness="0"
@@ -76,13 +70,11 @@
                                 MaximumWidthRequest="260"
                                 Padding="12,8">
                             <VerticalStackLayout Spacing="6">
-                                <!-- Texto -->
                                 <Label Text="{Binding Contenido}" 
                                        TextColor="White"
                                        FontSize="14"
                                        IsVisible="{Binding EsTexto}"/>
 
-                                <!-- Imagen enviada por ti con bordes pulidos -->
                                 <Border IsVisible="{Binding EsImagen}"
                                         StrokeShape="RoundRectangle 8"
                                         StrokeThickness="0"
@@ -104,13 +96,11 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- ÁREA DE ENTRADA DE TEXTO Y MEDIOS -->
         <Grid Grid.Row="2" 
               ColumnDefinitions="Auto, *, Auto" 
               Padding="12,10" 
               BackgroundColor="#121212">
 
-            <!-- Botón de Cámara (Acento Gris Neutro para mantener el orden) -->
             <Button Grid.Column="0" 
                     Text="📷"
                     FontSize="16"
@@ -123,7 +113,6 @@
                     Margin="0,0,8,0"
                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.SeleccionarImagenCommand}" />
 
-            <!-- Campo de Texto Estilizado -->
             <Border Grid.Column="1" 
                     BackgroundColor="#1E1E24"
                     StrokeThickness="1"
@@ -141,7 +130,6 @@
                        BackgroundColor="Transparent"/>
             </Border>
 
-            <!-- Botón de Enviar (Acento DarkRed con un icono simple) -->
             <Button Grid.Column="2" 
                     Text="➔"
                     FontSize="16"
