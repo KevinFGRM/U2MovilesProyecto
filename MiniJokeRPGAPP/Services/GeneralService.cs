@@ -9,7 +9,7 @@ namespace MiniJokeRPGAPP.Services
     {
         public readonly HttpClient client;
 
-        public string url = "https://localhost:7202/";
+        public string url = "https://minijokerpg.duckdns.org/";
 
         public GeneralService()
         {
