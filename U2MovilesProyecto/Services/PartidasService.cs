@@ -251,6 +251,7 @@ namespace U2MovilesProyecto.Services
                 personaje.VidaActual += habilidad.Curacion ?? 0;
             }
 
+
             partidaPersonajesRepository.Update(personaje);
             partidaPersonajesRepository.Update(objetivo);
 
