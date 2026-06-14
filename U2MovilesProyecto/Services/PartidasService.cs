@@ -245,6 +245,7 @@ namespace U2MovilesProyecto.Services
 
             objetivo.VidaActual -= habilidad.Dano ?? 0;
 
+
             if (habilidad.Curacion > 0)
             {
                 personaje.VidaActual += habilidad.Curacion ?? 0;
