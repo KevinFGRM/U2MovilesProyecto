@@ -174,6 +174,7 @@ namespace U2MovilesProyecto.Services
                         IdUsuario = usuarioPendiente.IdUsuario,
                         NombreUsuario = usuarioPendiente.NombreUsuario,
                         EstadoAmistad = "pendiente"
+
                     });
                 }
             }
