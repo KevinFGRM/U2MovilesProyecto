@@ -46,7 +46,12 @@ namespace MiniJokeRPGAPP.ViewModels
                 };
 
                 var response = await authService.Login(dto);
+                var token = Preferences.Get("fcm_token", "");
 
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await authService.GuardarFcmToken(token);
+                }
                 if (response != null)
                 {
                     await Shell.Current.GoToAsync("//MenuPage");

@@ -3,11 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsViews.AmigosView"
              BackgroundColor="#121212">
-    <!-- Mismo fondo oscuro profundo -->
 
     <Grid RowDefinitions="Auto, Auto, Auto, *">
 
-        <!-- PESTAÑAS DE FILTRO (Estilo Menú de RPG) -->
         <Grid Grid.Row="0"  ColumnDefinitions="*,*,*" ColumnSpacing="10"
                                Margin="10,15">
 
@@ -63,7 +61,6 @@
             </Button>
         </Grid>
 
-        <!-- Mensaje de Error Estilizado -->
         <Label Grid.Row="1" 
                Text="{Binding MensajeError}" 
                TextColor="Tomato" 
@@ -72,7 +69,6 @@
                HorizontalOptions="Center" 
                Margin="10"/>
 
-        <!-- Indicador de Carga con color de acento Índigo -->
         <ActivityIndicator Grid.Row="2" 
                            IsRunning="{Binding IsBusy}" 
                            IsVisible="{Binding IsBusy}"
@@ -80,7 +76,6 @@
                            HorizontalOptions="Center"
                            Margin="0,0,0,10"/>
 
-        <!-- LISTA DE USUARIOS / AMIGOS -->
         <CollectionView Grid.Row="3" 
                         ItemsSource="{Binding Usuarios}"
                         Margin="10,0">
@@ -91,7 +86,6 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <!-- Tarjeta con bordes redondeados consistente (#1E1E24) -->
                     <Border BackgroundColor="#1E1E24"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 12"
@@ -99,14 +93,12 @@
 
                         <Grid Padding="16" ColumnDefinitions="*, Auto">
 
-                            <!-- COLUMNA IZQUIERDA: Nombre y Estados Secundarios -->
                             <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
                                 <Label Text="{Binding NombreUsuario}" 
                                        FontSize="16" 
                                        FontAttributes="Bold" 
                                        TextColor="#E0E0E0"/>
 
-                                <!-- Texto sutil para cuando la solicitud está pendiente de aceptación -->
                                 <HorizontalStackLayout IsVisible="{Binding SoyEmisor}">
                                     <Label Text="Solicitud enviada (pendiente)" 
                                            FontSize="12" 
@@ -115,10 +107,8 @@
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
 
-                            <!-- COLUMNA DERECHA: Botones de Acción según el Estado -->
                             <StackLayout Grid.Column="1" VerticalOptions="Center">
 
-                                <!-- CASO 1: Agregar Amigo (No son nada aún) -->
                                 <Button Text="AGREGAR" 
                                         IsVisible="{Binding EsNinguno}" 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AgregarAmigoCommand}" 
@@ -131,7 +121,6 @@
                                         Padding="15,0"
                                         CornerRadius="6"/>
 
-                                <!-- CASO 2: Recibiste solicitud (Aceptar) -->
                                 <HorizontalStackLayout Spacing="0" IsVisible="False">
                                     <HorizontalStackLayout.Triggers>
                                         <MultiTrigger TargetType="HorizontalStackLayout">
@@ -155,7 +144,6 @@
                                             CornerRadius="6"/>
                                 </HorizontalStackLayout>
 
-                                <!-- CASO 3: Ya son amigos (Chat y Partida) -->
                                 <HorizontalStackLayout Spacing="8" IsVisible="{Binding EsAmigo}">
                                     <Button Text="CHAT" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.AbrirChatCommand}" 

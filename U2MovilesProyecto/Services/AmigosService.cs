@@ -126,10 +126,6 @@ namespace U2MovilesProyecto.Services
 
             foreach (var item in usuarios)
             {
-                // despues de lo que hice en partidas ya no me parece tan complicado
-
-                // aqui me empece a arrepentir de no haber planeado propiedades en las entidades y/o dtos 
-                // pero bueno se logro.
                 var siEspendientePeroSoyElQueMandoSolicitud = amigosRepository.Query().Any(a => (a.Usuario2 == item.IdUsuario && a.Estado == "pendiente"
                 && ((a.Usuario1 == usuario && a.Usuario2 == item.IdUsuario)
                             || (a.Usuario1 == item.IdUsuario && a.Usuario2 == usuario))));
@@ -178,6 +174,7 @@ namespace U2MovilesProyecto.Services
                         IdUsuario = usuarioPendiente.IdUsuario,
                         NombreUsuario = usuarioPendiente.NombreUsuario,
                         EstadoAmistad = "pendiente"
+
                     });
                 }
             }

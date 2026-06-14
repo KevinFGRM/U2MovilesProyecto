@@ -4,15 +4,12 @@
              x:Class="MiniJokeRPGAPP.Views.LoginPage"
              Title="Mini Joke RPG"
              BackgroundColor="#121212">
-    <!-- Fondo general oscuro -->
 
     <Grid>
-        <!-- CONTENEDOR PRINCIPAL -->
         <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
 
             <VerticalStackLayout Spacing="25" WidthRequest="320" Padding="10">
 
-                <!-- Logo o Título del Juego (Atracción Inicial) -->
                 <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
                     <Label Text="⚔️" FontSize="44" HorizontalOptions="Center" Margin="0,0,0,5"/>
                     <Label Text="MINI JOKE RPG" 
@@ -27,7 +24,6 @@
                            HorizontalOptions="Center"/>
                 </VerticalStackLayout>
 
-                <!-- Tarjeta del Formulario -->
                 <Border BackgroundColor="#1E1E24"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 16"
@@ -42,7 +38,6 @@
                                CharacterSpacing="1"
                                Margin="0,0,0,5"/>
 
-                        <!-- Input Correo -->
                         <Border BackgroundColor="#15151A"
                                 StrokeThickness="1"
                                 Stroke="#2B2B36"
@@ -58,7 +53,6 @@
                                    BackgroundColor="Transparent"/>
                         </Border>
 
-                        <!-- Input Contraseña -->
                         <Border BackgroundColor="#15151A"
                                 StrokeThickness="1"
                                 Stroke="#2B2B36"
@@ -76,7 +70,6 @@
                         </Border>
 
 
-                        <!-- Footer: Enlace para Registrarse -->
                         <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Center" WidthRequest="260">
                             <Label Text="¿No tienes cuenta?" 
                            TextColor="#888888" 
@@ -96,7 +89,6 @@
                             Command="{Binding IrRegistrarCommand}"/>
                         </Grid>
                         
-                        <!-- Mensaje de Error (si existe) -->
                         <Label TextColor="Tomato" 
                                Text="{Binding MensajeError}" 
                                FontSize="12"
@@ -111,7 +103,6 @@
                             </Label.Triggers>
                         </Label>
 
-                        <!-- Botón Principal (DarkRed) -->
                         <Button Text="ENTRAR AL JUEGO" 
                                 Command="{Binding LoginCommand}"
                                 BackgroundColor="DarkRed"
@@ -130,7 +121,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- PANTALLA DE CARGA (OVERLAY) -->
         <Grid BackgroundColor="#D0000000" IsVisible="{Binding IsBusy}">
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
                 <ActivityIndicator IsRunning="{Binding IsBusy}" Color="DarkRed" Scale="1.2"/>

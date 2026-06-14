@@ -41,7 +41,7 @@ namespace MiniJokeRPGAPP.ViewModels
             switch (VistaActual)
             {
                 case "Amigos":
-                    await AmigosVM.CargarUsuarios();
+                    await AmigosVM.CargarAmigos();
                     break;
                 case "Partidas":
                     await PartidasVM.CargarPartidas();

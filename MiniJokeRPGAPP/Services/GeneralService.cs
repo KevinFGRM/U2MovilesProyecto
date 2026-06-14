@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,7 +14,12 @@ namespace MiniJokeRPGAPP.Services
 
         public GeneralService()
         {
-            client = new HttpClient
+            // para que funcione en emulador sin conflictos de ssl en teoria
+            client = new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            })
             {
                 BaseAddress = new Uri(url)
             };

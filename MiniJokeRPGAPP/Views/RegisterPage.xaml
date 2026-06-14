@@ -4,15 +4,12 @@
              x:Class="MiniJokeRPGAPP.Views.RegisterPage"
              Title="Unirse a la Aventura"
              BackgroundColor="#121212">
-    <!-- Mismo fondo oscuro profundo -->
 
     <Grid>
-        <!-- CONTENEDOR PRINCIPAL CON SCROLL -->
         <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
 
             <VerticalStackLayout Spacing="25" WidthRequest="320" Padding="10">
 
-                <!-- Encabezado de la página -->
                 <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
                     <Label Text="🛡️" FontSize="44" HorizontalOptions="Center" Margin="0,0,0,5"/>
                     <Label Text="NUEVO HÉROE" 
@@ -27,7 +24,6 @@
                            HorizontalOptions="Center"/>
                 </VerticalStackLayout>
 
-                <!-- Tarjeta del Formulario de Registro -->
                 <Border BackgroundColor="#1E1E24"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 16"
@@ -42,7 +38,6 @@
                                CharacterSpacing="1"
                                Margin="0,0,0,5"/>
 
-                        <!-- Input Nombre de Usuario -->
                         <Border BackgroundColor="#15151A"
                                 StrokeThickness="1"
                                 Stroke="#2B2B36"
@@ -58,7 +53,6 @@
                                    BackgroundColor="Transparent"/>
                         </Border>
 
-                        <!-- Input Correo -->
                         <Border BackgroundColor="#15151A"
                                 StrokeThickness="1"
                                 Stroke="#2B2B36"
@@ -74,7 +68,6 @@
                                    BackgroundColor="Transparent"/>
                         </Border>
 
-                        <!-- Input Contraseña -->
                         <Border BackgroundColor="#15151A"
                                 StrokeThickness="1"
                                 Stroke="#2B2B36"
@@ -90,7 +83,6 @@
                                    VerticalOptions="Center"
                                    BackgroundColor="Transparent"/>
                         </Border>
-                        <!-- Footer: Enlace para Volver al Login -->
                         <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Center" WidthRequest="260">
                             <Label Text="¿Ya estás registrado?" 
                            TextColor="#888888" 
@@ -110,7 +102,6 @@
                             Command="{Binding IrLoginCommand}"/>
                         </Grid>
 
-                        <!-- Mensaje de Error Estilizado -->
                         <Label TextColor="Tomato" 
                                Text="{Binding MensajeError}" 
                                FontSize="12"
@@ -125,7 +116,6 @@
                             </Label.Triggers>
                         </Label>
 
-                        <!-- Botón Principal de Registro (Acento Índigo) -->
                         <Button Text="CREAR CUENTA" 
                                 Command="{Binding RegisterCommand}"
                                 BackgroundColor="Indigo"

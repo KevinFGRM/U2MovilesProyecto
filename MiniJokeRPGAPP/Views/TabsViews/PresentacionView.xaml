@@ -3,16 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MiniJokeRPGAPP.Views.TabsViews.PresentacionView"
              BackgroundColor="#121212">
-    <!-- Mismo fondo oscuro profundo -->
 
-    <!-- Grid para centrar perfectamente todo en la pantalla -->
     <Grid VerticalOptions="Center" 
           HorizontalOptions="Center" 
           Padding="30">
 
         <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
 
-            <!-- Icono o Detalle Visual Sencillo Estilo RPG -->
             <Border BackgroundColor="#1E1E24"
                     StrokeShape="RoundRectangle 24"
                     HeightRequest="80"
@@ -22,14 +19,12 @@
                     StrokeThickness="1"
                     Stroke="Indigo">
 
-                <!-- Una espada cruzada o un "!" en texto en lo que pones un icono -->
                 <Label Text="⚔️" 
                        FontSize="32" 
                        HorizontalOptions="Center" 
                        VerticalOptions="Center"/>
             </Border>
 
-            <!-- Título de Bienvenida -->
             <Label Text="¡SESIÓN INICIADA!" 
                    TextColor="DarkRed" 
                    FontSize="22" 
@@ -37,7 +32,6 @@
                    HorizontalTextAlignment="Center"
                    CharacterSpacing="1"/>
 
-            <!-- Instrucción Secundaria -->
             <Label Text="Navega con los controles de abajo para iniciar tu aventura." 
                    TextColor="#888888" 
                    FontSize="14" 

@@ -13,19 +13,22 @@ namespace U2MovilesProyecto.Services
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
+        private readonly NotificacionesService notificacionesService;
 
         public MensajesService(
             Repository<Mensajes> mensajesRepository,
             Repository<Usuarios> usuariosRepository,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
+            NotificacionesService notificacionesService,
             IMapper mapper)
         {
             this.mensajesRepository = mensajesRepository;
             this.usuariosRepository = usuariosRepository;
             this.httpContextAccessor = httpContextAccessor;
-            this.mapper = mapper;
+            this.notificacionesService = notificacionesService;
             this.configuration = configuration;
+            this.mapper = mapper;
         }
 
         private int ObtenerIdUsuario()
@@ -49,6 +52,13 @@ namespace U2MovilesProyecto.Services
             };
 
             mensajesRepository.Insert(mensaje);
+
+
+            notificacionesService.EnviarNotificacion(
+                        dto.IdReceptor,
+                        "Nuevo mensaje",
+                        "Te enviaron un mensaje"
+                    );
         }
 
         public ListaMensajesDTO ObtenerChat(int idUsuario2)
