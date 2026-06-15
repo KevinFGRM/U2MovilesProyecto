@@ -1,5 +1,4 @@
 ﻿using MiniJokeRPGAPI.Data;
-using MiniJokeRPGAPI.Models.Entities;
 
 namespace AvisosAPI.Repositories
 {
