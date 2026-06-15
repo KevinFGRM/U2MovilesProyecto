@@ -82,6 +82,7 @@ namespace U2MovilesProyecto.Services
             partidasRepository.Insert(partida);
         }
 
+        // agregar rama
         public void SeleccionarPersonaje(SeleccionarPersonajeDto dto)
         {
             int usuario = ObtenerUsuario();
