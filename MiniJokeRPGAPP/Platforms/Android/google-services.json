@@ -1,21 +1,40 @@
 {
   "project_info": {
-    "project_number": "319147824063",
-    "project_id": "octavo2026-87db4",
-    "storage_bucket": "octavo2026-87db4.firebasestorage.app"
+    "project_number": "240994350103",
+    "project_id": "proyectoprueba-d29b7",
+    "storage_bucket": "proyectoprueba-d29b7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:319147824063:android:1e2491bb279c6dcc1cc70a",
+        "mobilesdk_app_id": "1:240994350103:android:78f37c8f7be58322771852",
         "android_client_info": {
-          "package_name": "com.itesrc.pruebanotificacion"
+          "package_name": "com.itsrc.prueba"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBjVWiDwhylbQd3SDsFWMB-mi-aA68b9pA"
+          "current_key": "AIzaSyB_faW2D9rMAIxZvBab_DGI3Gv5LwCaUrY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240994350103:android:e22d1246b36788f5771852",
+        "android_client_info": {
+          "package_name": "com.minijokerpg.mauiapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_faW2D9rMAIxZvBab_DGI3Gv5LwCaUrY"
         }
       ],
       "services": {

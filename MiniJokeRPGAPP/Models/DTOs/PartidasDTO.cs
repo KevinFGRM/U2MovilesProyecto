@@ -59,6 +59,12 @@
         public int CostoMana { get; set; }
         public int Dano { get; set; }
         public int Curacion { get; set; }
+
+        public string? TipoEfecto { get; set; }
+        public int? ValorEfecto { get; set; }
+        public int? Duracion { get; set; }
+
+        public string? Objetivo { get; set; }
     }
 
     public class EstadoPartidaDto
@@ -74,6 +80,7 @@
         public bool MiTurno { get; set; }
         public string Estado { get; set; } = "";
         public string? Ganador { get; set; }
+        public bool NoEsMiTurno => !MiTurno;
         public List<HabilidadResponseDto> HabilidadesJugador1 { get; set; } = new List<HabilidadResponseDto>();
     }
 
