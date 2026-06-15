@@ -59,6 +59,12 @@
         public int CostoMana { get; set; }
         public int Dano { get; set; }
         public int Curacion { get; set; }
+
+        public string? TipoEfecto { get; set; }
+        public int? ValorEfecto { get; set; }
+        public int? Duracion { get; set; }
+
+        public string? Objetivo { get; set; }
     }
 
     public class EstadoPartidaDto
