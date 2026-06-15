@@ -17,7 +17,7 @@ public partial class Accionespartida
 
     public DateTime? Fecha { get; set; }
 
-    public virtual Habilidades HabilidadNavigation { get; set; } = null!;
+    public virtual Habilidades? HabilidadNavigation { get; set; }
 
     public virtual Partidas IdPartidaNavigation { get; set; } = null!;
 
