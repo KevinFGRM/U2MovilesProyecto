@@ -42,6 +42,7 @@ namespace U2MovilesProyecto.Services
             this.accionesRepository = accionesRepository;
             this.amigosRepository = amigosRepository;
             this.httpContextAccessor = httpContextAccessor;
+            this.notificacionesService = notificacionesService;
             this.partidaHabilidadesRepository = partidaHabilidadesRepository;
             this.efectosRepository = efectosRepository;
             this.notificacionesService = notificacionesService;
@@ -85,6 +86,7 @@ namespace U2MovilesProyecto.Services
             partidasRepository.Insert(partida);
         }
 
+        // agregar rama
         public void SeleccionarPersonaje(SeleccionarPersonajeDto dto)
         {
             int usuario = ObtenerUsuario();
@@ -323,6 +325,7 @@ namespace U2MovilesProyecto.Services
             ConsumirEfectosDefensa(dto.IdPartida, objetivo.IdUsuario);
 
 
+
             if (habilidad.Curacion > 0)
             {
                 var datosPersonaje = personajesRepository.Get(personaje.IdPersonaje);
@@ -340,6 +343,7 @@ namespace U2MovilesProyecto.Services
                     Fecha = DateTime.Now
                 });
             }
+
 
             partidaPersonajesRepository.Update(personaje);
             partidaPersonajesRepository.Update(objetivo);
