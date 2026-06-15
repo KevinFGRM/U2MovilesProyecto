@@ -7,12 +7,38 @@
 
         <VerticalStackLayout Grid.Row="0" Spacing="10">
 
-            <Label Text="ARENA DE COMBATE" 
-                   HorizontalOptions="Center" 
-                   TextColor="DarkRed" 
-                   FontAttributes="Bold" 
-                   FontSize="12" 
-                   CharacterSpacing="2"/>
+            <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,4">
+
+                <Label Grid.Column="1" 
+               Text="ARENA DE COMBATE" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center"
+               TextColor="DarkRed" 
+               FontAttributes="Bold" 
+               FontSize="12" 
+               CharacterSpacing="2"/>
+
+                <Button Grid.Column="2"
+                Text="🔄"
+                FontAttributes="Bold"
+                FontSize="14"
+                WidthRequest="36"
+                HeightRequest="36"
+                CornerRadius="18"
+                Padding="0"
+                BackgroundColor="#1E1E24"
+                TextColor="Tomato"
+                BorderWidth="1"
+                BorderColor="DarkRed"
+                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.CargarEstadoCommand}">
+                    <Button.Triggers>
+                        <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                            <Setter Property="BackgroundColor" Value="#15151A" />
+                            <Setter Property="TextColor" Value="#555555" />
+                        </Trigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
 
             <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="8">
 
@@ -123,10 +149,10 @@
                             Padding="12,0"
                             CornerRadius="4">
                         <Button.Triggers>
-                            <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                            <DataTrigger TargetType="Button" Binding="{Binding EstadoPartida.NoEsMiTurno}" Value="True">
                                 <Setter Property="BackgroundColor" Value="#2B2B36" />
                                 <Setter Property="TextColor" Value="#555555" />
-                            </Trigger>
+                            </DataTrigger>
                         </Button.Triggers>
                     </Button>
                 </Grid>

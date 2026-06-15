@@ -31,7 +31,7 @@
 		<ApplicationTitle>MiniJokeRPGAPP</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.itesrc.pruebanotificacion</ApplicationId>
+		<ApplicationId>com.minijokerpg.mauiapp</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -63,14 +63,6 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Platforms\Android\google-services.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <GoogleServicesJson Include="Platforms\Android\google-services.json" />
 	</ItemGroup>
 
 	<ItemGroup>
