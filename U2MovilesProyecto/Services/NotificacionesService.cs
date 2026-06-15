@@ -2,7 +2,6 @@
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
-using MiniJokeRPGAPI.Data;
 using MiniJokeRPGAPI.Models.Entities;
 
 namespace U2MovilesProyecto.Services

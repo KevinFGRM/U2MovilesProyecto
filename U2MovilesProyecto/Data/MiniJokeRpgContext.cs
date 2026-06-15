@@ -21,6 +21,8 @@ public partial class MinijokerpgContext : DbContext
 
     public virtual DbSet<Amigos> Amigos { get; set; }
 
+    public virtual DbSet<Efectospartida> Efectospartida { get; set; }
+
     public virtual DbSet<Fcmtokens> Fcmtokens { get; set; }
 
     public virtual DbSet<Habilidades> Habilidades { get; set; }
@@ -62,6 +64,7 @@ public partial class MinijokerpgContext : DbContext
 
             entity.HasOne(d => d.HabilidadNavigation).WithMany(p => p.Accionespartida)
                 .HasForeignKey(d => d.Habilidad)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("accionespartida_ibfk_3");
 
             entity.HasOne(d => d.IdPartidaNavigation).WithMany(p => p.Accionespartida)
@@ -103,6 +106,19 @@ public partial class MinijokerpgContext : DbContext
                 .HasConstraintName("amigos_ibfk_2");
         });
 
+        modelBuilder.Entity<Efectospartida>(entity =>
+        {
+            entity.HasKey(e => e.IdEfecto).HasName("PRIMARY");
+
+            entity.ToTable("efectospartida");
+
+            entity.HasIndex(e => e.IdPartida, "IdPartida");
+
+            entity.HasIndex(e => e.IdUsuario, "IdUsuario");
+
+            entity.Property(e => e.TipoEfecto).HasMaxLength(30);
+        });
+
         modelBuilder.Entity<Fcmtokens>(entity =>
         {
             entity.HasKey(e => e.IdToken).HasName("PRIMARY");
@@ -135,6 +151,10 @@ public partial class MinijokerpgContext : DbContext
             entity.Property(e => e.Dano).HasDefaultValueSql("'0'");
             entity.Property(e => e.Descripcion).HasColumnType("text");
             entity.Property(e => e.Nombre).HasMaxLength(50);
+            entity.Property(e => e.Objetivo)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'enemigo'");
+            entity.Property(e => e.TipoEfecto).HasMaxLength(30);
 
             entity.HasOne(d => d.IdPersonajeNavigation).WithMany(p => p.Habilidades)
                 .HasForeignKey(d => d.IdPersonaje)
@@ -177,15 +197,14 @@ public partial class MinijokerpgContext : DbContext
 
             entity.ToTable("partidahabilidades");
 
-            entity.HasIndex(e => e.IdHabilidad, "IdHabilidad");
-
             entity.HasIndex(e => e.IdPartida, "IdPartida");
 
             entity.HasIndex(e => e.IdUsuario, "IdUsuario");
 
+            entity.HasIndex(e => e.IdHabilidad, "partidahabilidades_ibfk_3");
+
             entity.HasOne(d => d.IdHabilidadNavigation).WithMany(p => p.Partidahabilidades)
                 .HasForeignKey(d => d.IdHabilidad)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("partidahabilidades_ibfk_3");
 
             entity.HasOne(d => d.IdPartidaNavigation).WithMany(p => p.Partidahabilidades)

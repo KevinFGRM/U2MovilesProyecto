@@ -16,6 +16,7 @@ namespace U2MovilesProyecto.Services
         private readonly Repository<Accionespartida> accionesRepository;
         private readonly Repository<Amigos> amigosRepository;
         private readonly Repository<Partidahabilidades> partidaHabilidadesRepository;
+        private readonly Repository<Efectospartida> efectosRepository;
         private readonly NotificacionesService notificacionesService;
         private readonly Random random = new();
 
@@ -30,6 +31,7 @@ namespace U2MovilesProyecto.Services
             Repository<Accionespartida> accionesRepository,
             Repository<Amigos> amigosRepository,
             Repository<Partidahabilidades> partidaHabilidadesRepository,
+            Repository<Efectospartida> efectosRepository,
             NotificacionesService notificacionesService,
             IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
@@ -42,6 +44,8 @@ namespace U2MovilesProyecto.Services
             this.httpContextAccessor = httpContextAccessor;
             this.notificacionesService = notificacionesService;
             this.partidaHabilidadesRepository = partidaHabilidadesRepository;
+            this.efectosRepository = efectosRepository;
+            this.notificacionesService = notificacionesService;
             this.mapper = mapper;
         }
 
@@ -75,7 +79,7 @@ namespace U2MovilesProyecto.Services
                 Estado = "esperandopersonajes",
                 TurnoActual = usuario
             };
-            notificacionesService.EnviarNotificacion(dto.IdJugador2,
+            notificacionesService.EnviarNotificacion(dto.IdJugador2, 
                 "Nuevo reto",
                 "Un jugador te ha retado"
             );
@@ -195,6 +199,7 @@ namespace U2MovilesProyecto.Services
             var personaje = partidaPersonajesRepository.Query()
                 .First(x => x.IdPartida == dto.IdPartida && x.IdUsuario == usuario);
 
+
             int enemigo = partida.Jugador1 == usuario ? partida.Jugador2 : partida.Jugador1;
 
             if (dto.IdHabilidad == 0)
@@ -221,6 +226,8 @@ namespace U2MovilesProyecto.Services
                 return;
 
             }
+
+
             var habilidad = habilidadesRepository.Get(dto.IdHabilidad);
 
             if (habilidad == null)
@@ -242,6 +249,12 @@ namespace U2MovilesProyecto.Services
             if (personaje.ManaActual < habilidad.CostoMana)
                 throw new Exception("Mana insuficiente.");
 
+            ProcesarInicioTurno(dto.IdPartida, personaje);  // metodo para efectos
+            if (personaje.VidaActual <= 0)
+            {
+                FinalizarPartida(dto.IdPartida, enemigo);
+                return;
+            }
 
             var objetivo = partidaPersonajesRepository.Query()
                 .First(x => x.IdPartida == dto.IdPartida && x.IdUsuario == enemigo);
@@ -250,29 +263,106 @@ namespace U2MovilesProyecto.Services
             // cambiar los nulos a 0 para evitar errores
             personaje.ManaActual -= habilidad.CostoMana ?? 0;
 
-            objetivo.VidaActual -= habilidad.Dano ?? 0;
+            var (dano, esCritico) = CalcularDaño(personaje, objetivo, habilidad.Dano ?? 0, dto.IdPartida);
+
+            objetivo.VidaActual -= dano;
+
+            // usar efectos
+            if (!string.IsNullOrEmpty(habilidad.TipoEfecto))
+            {
+                if (habilidad.TipoEfecto == "mana")
+                {
+                    personaje.ManaActual += habilidad.ValorEfecto ?? 0;
+
+                    accionesRepository.Insert(new Accionespartida
+                    {
+                        IdPartida = dto.IdPartida,
+                        Usuario = usuario,
+                        Habilidad = habilidad.IdHabilidad,
+                        Descripcion = $"{ObtenerNombrePersonaje(personaje.IdPersonaje)} recuperó {habilidad.ValorEfecto} de maná.",
+                        Fecha = DateTime.Now
+                    });
+                }
+                else if (habilidad.TipoEfecto == "robomana")
+                {
+                    int robo = habilidad.ValorEfecto ?? 0;
+
+                    int roboReal = Math.Min(robo, objetivo.ManaActual);
+
+                    objetivo.ManaActual -= roboReal;
+                    personaje.ManaActual += roboReal;
+
+                    accionesRepository.Insert(new Accionespartida
+                    {
+                        IdPartida = dto.IdPartida,
+                        Usuario = usuario,
+                        Habilidad = habilidad.IdHabilidad,
+                        Descripcion = $"{ObtenerNombrePersonaje(personaje.IdPersonaje)} robó {roboReal} de maná.",
+                        Fecha = DateTime.Now
+                    });
+
+                }
+                else if (habilidad.TipoEfecto == "purificar")
+                {
+                    Purificar(dto.IdPartida, usuario);
+                    accionesRepository.Insert(new Accionespartida
+                    {
+                        IdPartida = dto.IdPartida,
+                        Usuario = usuario,
+                        Habilidad = habilidad.IdHabilidad,
+                        Descripcion = $"{ObtenerNombrePersonaje(personaje.IdPersonaje)} eliminó sus efectos negativos.",
+                        Fecha = DateTime.Now
+                    });
+                }
+                else
+                {
+                    int destino = habilidad.Objetivo == "propio" ? usuario : enemigo;
+                    AplicarEfecto(dto.IdPartida, usuario, destino, habilidad);
+                }
+            }
+
+            ConsumirEfectosAtaque(dto.IdPartida, usuario);
+            ConsumirEfectosDefensa(dto.IdPartida, objetivo.IdUsuario);
+
 
 
             if (habilidad.Curacion > 0)
             {
-                personaje.VidaActual += habilidad.Curacion ?? 0;
+                var datosPersonaje = personajesRepository.Get(personaje.IdPersonaje);
+
+                personaje.VidaActual = Math.Min(personaje.VidaActual + (habilidad.Curacion ?? 0), datosPersonaje.VidaBase);
+
+                var nombrePersonaje = ObtenerNombrePersonaje(personaje.IdPersonaje);
+
+                accionesRepository.Insert(new Accionespartida
+                {
+                    IdPartida = dto.IdPartida,
+                    Usuario = usuario,
+                    Habilidad = habilidad.IdHabilidad,
+                    Descripcion = $"{nombrePersonaje} recuperó {habilidad.Curacion} de vida.",
+                    Fecha = DateTime.Now
+                });
             }
 
 
             partidaPersonajesRepository.Update(personaje);
             partidaPersonajesRepository.Update(objetivo);
 
-            Accionespartida accion = new()
+            if (habilidad.Curacion <= 0 && habilidad.Dano > 0)
             {
-                IdPartida = dto.IdPartida,
-                Usuario = usuario,
-                Habilidad = habilidad.IdHabilidad,
-                Descripcion =
-                    $"Uso {habilidad.Nombre} e hizo {habilidad.Dano} daño.",
-                Fecha = DateTime.Now
-            };
-
-            accionesRepository.Insert(accion);
+                var nombreAtacante = ObtenerNombrePersonaje(personaje.IdPersonaje);
+                var nombreObjetivo = ObtenerNombrePersonaje(objetivo.IdPersonaje);
+                string textoCritico = esCritico ? " ¡CRÍTICO!" : "";
+                Accionespartida accion = new()
+                {
+                    IdPartida = dto.IdPartida,
+                    Usuario = usuario,
+                    Habilidad = habilidad.IdHabilidad,
+                    Descripcion = $"{nombreAtacante} usó {habilidad.Nombre} e hizo {dano} de daño a {nombreObjetivo}. {textoCritico}",
+                    Fecha = DateTime.Now
+                };
+                accionesRepository.Insert(accion);
+            }
 
             if (objetivo.VidaActual <= 0)
             {
@@ -310,6 +400,285 @@ namespace U2MovilesProyecto.Services
 
             partidasRepository.Update(partida);
         }
+        private string ObtenerNombrePersonaje(int idPersonaje)
+        {
+            var personaje = personajesRepository.Get(idPersonaje);
+            return personaje?.Nombre ?? $"Personaje {idPersonaje}";
+        }
+        // Modificaciones de efectos para las habilidades durante la partida
+        private void AplicarEfecto(int idPartida, int usuario, int objetivo, Habilidades habilidad)
+        {
+            if (string.IsNullOrEmpty(habilidad.TipoEfecto))
+                return;
+
+            int valor = habilidad.ValorEfecto ?? 0;
+            int destino = objetivo;
+            if (valor < 0 && habilidad.Objetivo == "propio")
+            {
+                var partida = partidasRepository.Get(idPartida);
+                int enemigo = partida.Jugador1 == usuario ? partida.Jugador2 : partida.Jugador1;
+                destino = enemigo;
+            }
+
+            var personajeDestino = partidaPersonajesRepository.Query()
+                .FirstOrDefault(x => x.IdPartida == idPartida && x.IdUsuario == destino);
+            if (personajeDestino == null) return;
+
+            string nombreDestino = ObtenerNombrePersonaje(personajeDestino.IdPersonaje);
+
+            Efectospartida efecto = new()
+            {
+                IdPartida = idPartida,
+                IdUsuario = destino,
+                TipoEfecto = habilidad.TipoEfecto,
+                Valor = valor,
+                TurnosRestantes = habilidad.Duracion ?? 0
+            };
+            efectosRepository.Insert(efecto);
+
+            string mensaje;
+            string accion = valor >= 0 ? "aumentó" : "disminuyó";
+            int valorAbs = Math.Abs(valor);
+
+            switch (habilidad.TipoEfecto)
+            {
+                case "veneno":
+                    mensaje = $"{nombreDestino} fue envenenado por {habilidad.Duracion} turnos.";
+                    break;
+                case "regeneracion":
+                    mensaje = $"{nombreDestino} obtiene regeneración por {habilidad.Duracion} turnos.";
+                    break;
+                case "defensa":
+                    mensaje = $"{nombreDestino} {accion} su defensa en {valorAbs}.";
+                    break;
+                case "esquiva":
+                    mensaje = $"{nombreDestino} {accion} su esquiva en {valorAbs}%.";
+                    break;
+                case "critico":
+                    mensaje = $"{nombreDestino} {accion} su probabilidad de crítico en {valorAbs}%.";
+                    break;
+                case "escudo":
+                    mensaje = $"{nombreDestino} generó un escudo de {valorAbs}.";
+                    break;
+                case "congelar":
+                    mensaje = $"{nombreDestino} fue congelado.";
+                    break;
+                case "precision":
+                    mensaje = $"{nombreDestino} {accion} su precisión en {valorAbs}%.";
+                    break;
+                default:
+                    mensaje = $"{nombreDestino} recibió el efecto: {habilidad.TipoEfecto}.";
+                    break;
+            }
+
+            // El Usuario que se guarda en la acción es el caster (el que usó la habilidad)
+            accionesRepository.Insert(new Accionespartida
+            {
+                IdPartida = idPartida,
+                Usuario = usuario,
+                Habilidad = habilidad.IdHabilidad,
+                Descripcion = mensaje,
+                Fecha = DateTime.Now
+            });
+        }
+        private void ProcesarInicioTurno(int idPartida, Partidapersonajes personaje)
+        {
+            var efectos = efectosRepository.Query()
+                .Where(x =>
+                    x.IdPartida == idPartida &&
+                    x.IdUsuario == personaje.IdUsuario)
+                .ToList();
+
+            var nombrePersonaje = ObtenerNombrePersonaje(personaje.IdPersonaje); //  obtener nombre
+
+            foreach (var efecto in efectos)
+            {
+                switch (efecto.TipoEfecto)
+                {
+                    case "veneno":
+                        personaje.VidaActual -= efecto.Valor;
+
+                        accionesRepository.Insert(new Accionespartida
+                        {
+                            IdPartida = idPartida,
+                            Usuario = personaje.IdUsuario,
+                            Habilidad = null,
+                            Descripcion = $"{nombrePersonaje} recibió {efecto.Valor} de daño por veneno.",
+                            Fecha = DateTime.Now
+                        });
+
+                        efecto.TurnosRestantes--;
+                        break;
+
+                    case "regeneracion":
+
+                        var datosPersonaje = personajesRepository.Get(personaje.IdPersonaje);
+
+                        personaje.VidaActual = Math.Min(personaje.VidaActual + efecto.Valor, datosPersonaje.VidaBase);
+
+                        accionesRepository.Insert(new Accionespartida
+                        {
+                            IdPartida = idPartida,
+                            Usuario = personaje.IdUsuario,
+                            Habilidad = null,
+                            Descripcion = $"{nombrePersonaje} recuperó {efecto.Valor} de vida.",
+                            Fecha = DateTime.Now
+                        });
+
+                        efecto.TurnosRestantes--;
+                        break;
+
+                    case "congelar":
+                        accionesRepository.Insert(new Accionespartida
+                        {
+                            IdPartida = idPartida,
+                            Usuario = personaje.IdUsuario,
+                            Habilidad = null,
+                            Descripcion = $"{nombrePersonaje} está congelado y esquiva más lento.",
+                            Fecha = DateTime.Now
+                        });
+
+                        efecto.TurnosRestantes--;
+                        break;
+                }
+
+                if (efecto.TurnosRestantes <= 0)
+                    efectosRepository.Delete(efecto.IdEfecto);
+                else
+                    efectosRepository.Update(efecto);
+            }
+
+            partidaPersonajesRepository.Update(personaje);
+        }
+        private (int daño, bool esCritico) CalcularDaño(Partidapersonajes atacante, Partidapersonajes defensor, int dañoBase, int idPartida)
+        {
+            int daño = dañoBase;
+            bool critico = false;
+
+            var efectosAtacante = efectosRepository.Query()
+                .Where(x => x.IdPartida == idPartida && x.IdUsuario == atacante.IdUsuario).ToList();
+
+            var efectosDefensor = efectosRepository.Query()
+                .Where(x => x.IdPartida == idPartida && x.IdUsuario == defensor.IdUsuario).ToList();
+
+            int precisionAtacante = efectosAtacante.Where(x => x.TipoEfecto == "precision").Sum(x => x.Valor);
+
+            int esquivaDefensor = efectosDefensor.Where(x => x.TipoEfecto == "esquiva").Sum(x => x.Valor);
+
+            int probabilidadFallo = esquivaDefensor - precisionAtacante;
+
+            probabilidadFallo = Math.Clamp(probabilidadFallo, 0, 100);
+
+            if (random.Next(1, 101) <= probabilidadFallo)
+            {
+                var nombreDefensor = ObtenerNombrePersonaje(defensor.IdPersonaje);
+
+                accionesRepository.Insert(new Accionespartida
+                {
+                    IdPartida = idPartida,
+                    Usuario = defensor.IdUsuario,
+                    Habilidad = null,
+                    Descripcion = $"{nombreDefensor} esquivó el ataque.",
+                    Fecha = DateTime.Now
+                });
+
+                return (0, false);
+            }
+
+            int probCritico = efectosAtacante.Where(x => x.TipoEfecto == "critico").Sum(x => x.Valor);
+
+            if (probCritico > 0 && random.Next(1, 101) <= probCritico)
+            {
+                critico = true;
+                daño = (int)(daño * 1.5);
+            }
+
+            bool ignorarDefensa = efectosAtacante.Any(x => x.TipoEfecto == "ignorardefensa");
+
+            if (!ignorarDefensa)
+            {
+                var personajeDefensor = personajesRepository.Get(defensor.IdPersonaje);
+
+                int defensaBase = personajeDefensor?.DefensaBase ?? 0;
+
+                int defensaExtra = efectosDefensor.Where(x => x.TipoEfecto == "defensa") .Sum(x => x.Valor);
+
+                int defensaTotal = defensaBase + defensaExtra;
+
+                daño -= (int)(daño * (defensaTotal / 100.0));
+            }
+
+            var escudos = efectosDefensor.Where(x => x.TipoEfecto == "escudo").ToList();
+
+            foreach (var escudo in escudos)
+            {
+                if (daño <= 0)
+                    break;
+
+                int absorbido = Math.Min(daño, escudo.Valor);
+
+                daño -= absorbido;
+                escudo.Valor -= absorbido;
+
+                if (escudo.Valor <= 0)
+                    efectosRepository.Delete(escudo.IdEfecto);
+                else
+                    efectosRepository.Update(escudo);
+            }
+
+            if (daño < 0)
+                daño = 0;
+
+            return (daño, critico);
+        }
+        private void ConsumirEfectosAtaque(int idPartida, int idUsuario)
+        {
+            var efectos = efectosRepository.Query()
+                .Where(x => x.IdPartida == idPartida && x.IdUsuario == idUsuario).ToList();
+
+            foreach (var efecto in efectos)
+            {
+                if (efecto.TipoEfecto == "critico" || efecto.TipoEfecto == "ignorardefensa" || efecto.TipoEfecto == "precision")
+                {
+                    efecto.TurnosRestantes--;
+
+                    if (efecto.TurnosRestantes <= 0)
+                        efectosRepository.Delete(efecto.IdEfecto);
+                    else
+                        efectosRepository.Update(efecto);
+                }
+            }
+        }
+        private void ConsumirEfectosDefensa(int idPartida, int idUsuario)
+        {
+            var efectos = efectosRepository.Query()
+                .Where(x => x.IdPartida == idPartida && x.IdUsuario == idUsuario).ToList();
+
+            foreach (var efecto in efectos)
+            {
+                if (efecto.TipoEfecto == "esquiva" || efecto.TipoEfecto == "defensa" || efecto.TipoEfecto == "escudo")
+                {
+                    efecto.TurnosRestantes--;
+
+                    if (efecto.TurnosRestantes <= 0)
+                        efectosRepository.Delete(efecto.IdEfecto);
+                    else
+                        efectosRepository.Update(efecto);
+                }
+            }
+        }
+        private void Purificar(int idPartida, int idUsuario)
+        {
+
+            var efectos = efectosRepository.Query()
+                .Where(x => x.IdPartida == idPartida && x.IdUsuario == idUsuario &&
+                    ( x.TipoEfecto == "veneno" || x.TipoEfecto == "congelar" || x.TipoEfecto == "precision")).ToList();
+
+            foreach (var e in efectos)
+                efectosRepository.Delete(e.IdEfecto);
+        }
+
+        // aqui terminan las modificaciones de efectos
 
         public List<AccionResponseDTO> CargarAcciones(int idPartida)
         {
@@ -343,14 +712,11 @@ namespace U2MovilesProyecto.Services
         }
         public List<HabilidadResponseDto> CargarHabilidades(int idPersonaje)
         {
-            var habilidades = habilidadesRepository.Query()
-                .Where(x => x.IdPersonaje == idPersonaje)
-                .ToList();
+            var habilidades = habilidadesRepository.Query().Where(x => x.IdPersonaje == idPersonaje).ToList();
 
             return habilidades.Select(h => mapper.Map<HabilidadResponseDto>(h)).ToList();
         }
 
-        
         public EstadoPartidaDto ObtenerEstado(int idPartida)
         {
             int usuario = ObtenerUsuario();
@@ -397,9 +763,9 @@ namespace U2MovilesProyecto.Services
                 MiTurno = partida.TurnoActual == usuario,
                 Estado = partida.Estado,
             };
-            if(estado.Estado == "finalizada")
+            if (estado.Estado == "finalizada")
             {
-                estado.Ganador = partida.Ganador == usuario ? $"{(partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "Tú")} (Tú)" 
+                estado.Ganador = partida.Ganador == usuario ? $"{(partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "Tú")} (Tú)"
                               : (partida.GanadorNavigation != null ? partida.GanadorNavigation.NombreUsuario : "(Oponente)");
             }
 

@@ -19,6 +19,14 @@ public partial class Habilidades
 
     public int? Curacion { get; set; }
 
+    public string? TipoEfecto { get; set; }
+
+    public int? ValorEfecto { get; set; }
+
+    public int? Duracion { get; set; }
+
+    public string Objetivo { get; set; } = null!;
+
     public virtual ICollection<Accionespartida> Accionespartida { get; set; } = new List<Accionespartida>();
 
     public virtual Personajes IdPersonajeNavigation { get; set; } = null!;
