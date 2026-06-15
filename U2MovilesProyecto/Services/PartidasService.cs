@@ -16,6 +16,7 @@ namespace U2MovilesProyecto.Services
         private readonly Repository<Accionespartida> accionesRepository;
         private readonly Repository<Amigos> amigosRepository;
         private readonly Repository<Partidahabilidades> partidaHabilidadesRepository;
+        private readonly NotificacionesService notificacionesService;
         private readonly Random random = new();
 
         private readonly IHttpContextAccessor httpContextAccessor;
@@ -29,6 +30,7 @@ namespace U2MovilesProyecto.Services
             Repository<Accionespartida> accionesRepository,
             Repository<Amigos> amigosRepository,
             Repository<Partidahabilidades> partidaHabilidadesRepository,
+            NotificacionesService notificacionesService,
             IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             this.partidasRepository = partidasRepository;
@@ -38,6 +40,7 @@ namespace U2MovilesProyecto.Services
             this.accionesRepository = accionesRepository;
             this.amigosRepository = amigosRepository;
             this.httpContextAccessor = httpContextAccessor;
+            this.notificacionesService = notificacionesService;
             this.partidaHabilidadesRepository = partidaHabilidadesRepository;
             this.mapper = mapper;
         }
@@ -72,10 +75,14 @@ namespace U2MovilesProyecto.Services
                 Estado = "esperandopersonajes",
                 TurnoActual = usuario
             };
-
+            notificacionesService.EnviarNotificacion(dto.IdJugador2,
+                "Nuevo reto",
+                "Un jugador te ha retado"
+            );
             partidasRepository.Insert(partida);
         }
 
+        // agregar rama
         public void SeleccionarPersonaje(SeleccionarPersonajeDto dto)
         {
             int usuario = ObtenerUsuario();
@@ -250,6 +257,7 @@ namespace U2MovilesProyecto.Services
             {
                 personaje.VidaActual += habilidad.Curacion ?? 0;
             }
+
 
             partidaPersonajesRepository.Update(personaje);
             partidaPersonajesRepository.Update(objetivo);
