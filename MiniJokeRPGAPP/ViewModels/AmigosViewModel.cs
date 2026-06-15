@@ -151,17 +151,13 @@ namespace MiniJokeRPGAPP.ViewModels
                 };
 
                 await amigosService.AgregarAmigo(dto);
-// Codigo generado con IA indicandole que implemente snackbar solamente para android
+                // Codigo generado con IA indicandole que implemente Toast solamente para android
 #if ANDROID
-
+                // Código específico para Android
                 var activity = Platform.CurrentActivity;
-                var view = activity?.FindViewById(Android.Resource.Id.Content);
-
-                if (view != null)
+                if (activity != null)
                 {
-                    Snackbar.Make(view, "Amigo Agregado con exito", Snackbar.LengthShort)
-                            .SetAction("OK", v => { })
-                            .Show();
+                    Toast.MakeText(activity, $"Agregaste a {usuario.NombreUsuario} solicitud pendiente.", ToastLength.Short).Show();
                 }
 #endif
                 await CargarUsuarios();
@@ -195,6 +191,14 @@ namespace MiniJokeRPGAPP.ViewModels
                 {
                     await CargarPendientes();
                 }
+#if ANDROID
+                // Código específico para Android
+                var activity = Platform.CurrentActivity;
+                if (activity != null)
+                {
+                    Toast.MakeText(activity, $"Aceptaste a {usuario.NombreUsuario} como amigo", ToastLength.Short).Show();
+                }
+#endif
             }
             catch (Exception ex)
             {

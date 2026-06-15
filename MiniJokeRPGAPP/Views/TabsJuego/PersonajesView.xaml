@@ -94,16 +94,42 @@
                                                 Stroke="Indigo"
                                                 StrokeShape="RoundRectangle 10" 
                                                 Padding="12">
-                                            <VerticalStackLayout Spacing="4">
+                                            <VerticalStackLayout Spacing="6">
 
-                                                <Label Text="{Binding Nombre}" FontSize="14" FontAttributes="Bold" TextColor="White"/>
+                                                <Grid ColumnDefinitions="*, Auto">
+                                                    <Label Text="{Binding Nombre}" FontSize="14" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+
+                                                    <Border Grid.Column="1" BackgroundColor="#2B2B36" StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2" VerticalOptions="Center">
+                                                        <Label Text="{Binding Objetivo, StringFormat='🎯 {0}'}" FontSize="9" FontAttributes="Bold" TextColor="#E0E0E0"/>
+                                                    </Border>
+                                                </Grid>
+
                                                 <Label Text="{Binding Descripcion}" FontSize="12" TextColor="#BBBBBB" LineHeight="1.2"/>
 
-                                                <Grid Margin="0,4,0,0" ColumnDefinitions="*,*,*">
+                                                <Grid ColumnDefinitions="*,*,*">
                                                     <Label Text="{Binding CostoMana, StringFormat='🔮 {0} PM'}" FontSize="11" TextColor="#90CAF9"/>
                                                     <Label Grid.Column="1" Text="{Binding Dano, StringFormat='💥 {0} DMG'}" FontSize="11" TextColor="Tomato"/>
                                                     <Label Grid.Column="2" Text="{Binding Curacion, StringFormat='💚 {0} HP'}" FontSize="11" TextColor="LightGreen"/>
                                                 </Grid>
+
+                                                <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" Margin="0,2,0,0">
+
+                                                    <Border BackgroundColor="#2A1B3D" StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2" Margin="0,0,6,0">
+                                                        <HorizontalStackLayout Spacing="4">
+                                                            <Label Text="✨" FontSize="10" VerticalOptions="Center"/>
+                                                            <Label Text="{Binding TipoEfecto}" FontSize="10" FontAttributes="Bold" TextColor="#D1C4E9" VerticalOptions="Center"/>
+                                                            <Label Text="{Binding ValorEfecto, StringFormat='+{0}'}" FontSize="10" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+                                                        </HorizontalStackLayout>
+                                                    </Border>
+
+                                                    <Border BackgroundColor="#1A237E" StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2">
+                                                        <HorizontalStackLayout Spacing="4">
+                                                            <Label Text="⏳" FontSize="10" VerticalOptions="Center"/>
+                                                            <Label Text="{Binding Duracion, StringFormat='{0} Turnos'}" FontSize="10" FontAttributes="Bold" TextColor="#C5CAE9" VerticalOptions="Center"/>
+                                                        </HorizontalStackLayout>
+                                                    </Border>
+
+                                                </FlexLayout>
 
                                             </VerticalStackLayout>
                                         </Border>

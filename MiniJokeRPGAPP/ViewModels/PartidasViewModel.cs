@@ -265,6 +265,7 @@ namespace MiniJokeRPGAPP.ViewModels
             }
 
         }
+        [RelayCommand]
         public async Task CargarEstado()
         {
             var estado = await partidasService.ObtenerEstado(IdPartida);
