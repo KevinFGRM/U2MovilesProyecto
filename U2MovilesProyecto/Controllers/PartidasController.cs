@@ -27,7 +27,7 @@ namespace U2MovilesProyecto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Crear(CrearPartidaDto dto)
+        public async Task<IActionResult> Crear(CrearPartidaDto dto)
         {
             var result = crearValidator.Validate(dto);
 
@@ -36,7 +36,7 @@ namespace U2MovilesProyecto.Controllers
 
             try
             {
-                service.CrearPartida(dto);
+                await service.CrearPartida(dto);
 
                 return Ok("Partida creada.");
             }

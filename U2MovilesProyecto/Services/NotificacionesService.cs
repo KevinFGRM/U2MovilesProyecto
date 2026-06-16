@@ -9,54 +9,101 @@ namespace U2MovilesProyecto.Services
     public class NotificacionesService
     {
         private readonly Repository<Fcmtokens> repository;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<NotificacionesService> logger;
 
-        public NotificacionesService(Repository<Fcmtokens> repository)
+        private bool firebaseInicializado;
+
+        public NotificacionesService(
+            Repository<Fcmtokens> repository,
+            IConfiguration configuration,
+            ILogger<NotificacionesService> logger)
         {
             this.repository = repository;
-            // codigo con ia, para evitar errores. ya que el original no dejaba.
-            // Solo inicializar Firebase en entornos que lo soportan
-            if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
-            {
-                try
-                {
-                    if (FirebaseApp.DefaultInstance == null)
-                    {
-                        FirebaseApp.Create(new AppOptions()
-                        {
-                            Credential = GoogleCredential.FromFile("wwwroot/fcmkey.json")
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Firebase no disponible: {ex.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Firebase no está disponible en este sistema operativo");
-            }
+            this.configuration = configuration;
+            this.logger = logger;
         }
 
-        public void EnviarNotificacion(int idUsuario, string titulo, string mensaje)
+        public async Task EnviarNotificacionAsync(int idUsuario, string titulo, string mensaje)
         {
-            var tokens = repository.Query().Where(x => x.IdUsuario == idUsuario).Select(x => x.Token).ToList();
-
-            if (!tokens.Any())
+            if (!InicializarFirebase())
                 return;
 
-            var ms = new MulticastMessage()
+            var tokens = repository.Query()
+                .Where(x => x.IdUsuario == idUsuario)
+                .Select(x => x.Token)
+                .ToList();
+
+            if (!tokens.Any())
+            {
+                logger.LogInformation(
+                    "El usuario {IdUsuario} no tiene tokens FCM registrados.",
+                    idUsuario);
+
+                return;
+            }
+
+            var ms = new MulticastMessage
             {
                 Tokens = tokens,
-
-                Notification = new Notification()
+                Notification = new Notification
                 {
                     Title = titulo,
                     Body = mensaje
                 }
             };
 
-            FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(ms);
+            try
+            {
+                var resultado = await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(ms);
+
+                logger.LogInformation(
+                    "Notificación enviada. Exitosas: {Success}, Fallidas: {Failed}",
+                    resultado.SuccessCount,
+                    resultado.FailureCount);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error enviando notificación Firebase.");
+            }
+        }
+
+        private bool InicializarFirebase()
+        {
+            if (firebaseInicializado ||
+                FirebaseApp.DefaultInstance != null)
+            {
+                firebaseInicializado = true;
+                return true;
+            }
+
+            try
+            {
+                var rutaArchivo = configuration["Firebase:ServiceAccountPath"];
+
+                if (string.IsNullOrWhiteSpace(rutaArchivo) ||
+                    !File.Exists(rutaArchivo))
+                {
+                    logger.LogWarning("No se encontró el archivo Firebase en {Ruta}", rutaArchivo);
+
+                    return false;
+                }
+
+                FirebaseApp.Create(new AppOptions
+                {
+                    Credential = GoogleCredential.FromFile(rutaArchivo)
+                });
+
+                firebaseInicializado = true;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "No se pudo inicializar Firebase.");
+
+                return false;
+            }
         }
     }
 }

@@ -56,7 +56,7 @@ namespace U2MovilesProyecto.Services
                 .User.FindFirst("Id")!.Value);
         }
 
-        public void CrearPartida(CrearPartidaDto dto)
+        public async Task CrearPartida(CrearPartidaDto dto)
         {
             int usuario = ObtenerUsuario();
 
@@ -79,7 +79,7 @@ namespace U2MovilesProyecto.Services
                 Estado = "esperandopersonajes",
                 TurnoActual = usuario
             };
-            notificacionesService.EnviarNotificacion(dto.IdJugador2, 
+            await notificacionesService.EnviarNotificacionAsync(dto.IdJugador2, 
                 "Nuevo reto",
                 "Un jugador te ha retado"
             );

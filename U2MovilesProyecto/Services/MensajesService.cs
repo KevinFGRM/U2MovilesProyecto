@@ -39,7 +39,7 @@ namespace U2MovilesProyecto.Services
             return int.Parse(claim!.Value);
         }
 
-        public void EnviarMensaje(MandarMensajeDTO dto)
+        public async Task EnviarMensaje(MandarMensajeDTO dto)
         {
             int idUsuario = ObtenerIdUsuario();
 
@@ -54,7 +54,7 @@ namespace U2MovilesProyecto.Services
             mensajesRepository.Insert(mensaje);
 
 
-            notificacionesService.EnviarNotificacion(
+            await notificacionesService.EnviarNotificacionAsync(
                         dto.IdReceptor,
                         "Nuevo mensaje",
                         "Te enviaron un mensaje"

@@ -25,7 +25,7 @@ namespace U2MovilesProyecto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Enviar(MandarMensajeDTO dto)
+        public async Task<IActionResult> Enviar(MandarMensajeDTO dto)
         {
             var result = validator.Validate(dto);
 
@@ -34,7 +34,7 @@ namespace U2MovilesProyecto.Controllers
 
             try
             {
-                service.EnviarMensaje(dto);
+                await service.EnviarMensaje(dto);
                 return Ok("Mensaje enviado.");
             }
             catch (Exception ex)
