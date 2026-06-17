@@ -50,10 +50,12 @@
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-		<MauiSplashScreen Include="Resources\Splash\rpglogo.png"   Color="#000000"/>
+		<JavaDocJar Include="Resources\Splash\splash.png" Color="#000000">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</JavaDocJar>
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#000000" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -68,7 +70,6 @@
 
 	<ItemGroup>
 	  <None Remove="Platforms\Android\google-services.json" />
-	  <None Remove="Resources\Splash\rpglogo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
