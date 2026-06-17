@@ -51,7 +51,7 @@
                                 <Label Text="❤️ HP" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
                                 <Label Grid.Column="1" Text="{Binding EstadoPartida.VidaJugador1}" FontSize="11" TextColor="White" FontAttributes="Bold"/>
                             </Grid>
-                            <ProgressBar Progress="{Binding EstadoPartida.VidaJugador1}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
+                            <ProgressBar Progress="{Binding MiVidaPorcentaje}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
                         </VerticalStackLayout>
 
                         <Label Text="{Binding EstadoPartida.ManaJugador1, StringFormat='🔮 {0} PM'}" FontSize="12" TextColor="#90CAF9" FontAttributes="Bold" HorizontalOptions="Center"/>
@@ -75,7 +75,7 @@
                                 <Label Text="❤️ HP" FontSize="10" TextColor="#888888" FontAttributes="Bold"/>
                                 <Label Grid.Column="1" Text="{Binding EstadoPartida.VidaEnemigo2}" FontSize="11" TextColor="White" FontAttributes="Bold"/>
                             </Grid>
-                            <ProgressBar Progress="{Binding EstadoPartida.VidaEnemigo2}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
+                            <ProgressBar Progress="{Binding EnemigoVidaPorcentaje}" ProgressColor="Tomato" BackgroundColor="#15151A"/>
                         </VerticalStackLayout>
 
                         <Label Text="{Binding EstadoPartida.ManaEnemigo2, StringFormat='🔮 {0} PM'}" FontSize="12" TextColor="#90CAF9" FontAttributes="Bold" HorizontalOptions="Center"/>

@@ -43,6 +43,7 @@ namespace MiniJokeRPGAPP.ViewModels
         [ObservableProperty]
         PersonajeResponseDto? personajeSeleccionado;
 
+        public int VidaBase { get; set; }
         public MenuViewModel MenuVM { get; set; } = null!;
 
         public PartidasViewModel(PartidasService partidasService, PersonajesService personajesService)
@@ -265,18 +266,50 @@ namespace MiniJokeRPGAPP.ViewModels
             }
 
         }
+
+        [ObservableProperty]
+        private int miVidaBase;
+        [ObservableProperty]
+        private int enemigoVidaBase;
+
+        [ObservableProperty]
+        double miVidaPorcentaje;
+        [ObservableProperty]
+        double enemigoVidaPorcentaje;
+
         [RelayCommand]
         public async Task CargarEstado()
         {
             var estado = await partidasService.ObtenerEstado(IdPartida);
             EstadoPartida = estado;
-            if(EstadoPartida != null && EstadoPartida.Estado == "finalizada")
+            if (EstadoPartida != null)
+            {
+                MiVidaBase = ObtenerVidaBase(EstadoPartida.Personaje1);
+                EnemigoVidaBase = ObtenerVidaBase(EstadoPartida.Personaje2);
+                MiVidaPorcentaje = MiVidaBase > 0 ? (double)EstadoPartida.VidaJugador1 / MiVidaBase : 0;
+                EnemigoVidaPorcentaje = EnemigoVidaBase > 0 ? (double)EstadoPartida.VidaEnemigo2 / EnemigoVidaBase : 0;
+            }
+
+            if (EstadoPartida != null && EstadoPartida.Estado == "finalizada")
             {
                 GanadorTexto = $"Gano {EstadoPartida.Ganador}, un experto en combate.";
                 return;
             }
             
             await CargarAcciones();
+        }
+        private int ObtenerVidaBase(int idPersonaje)
+        {
+
+            switch (idPersonaje)
+            {
+                case 4: return 180;
+                case 5: return 200;
+                case 6: return 120;
+                    default: return 100;
+
+            }
+
         }
     }
 }
